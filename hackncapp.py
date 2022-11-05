@@ -42,10 +42,12 @@ app = Flask(__name__)
 def create_savings_goal():
     if request.method == "POST":
         newSavingsGoal = SavingsGoal(request.form.get("goalname"),
-            request.form.get("goal"), datetime(int(request.form.get("year")),int(request.form.get("month")),int(request.form.get("day"))))
-        return newSavingsGoal.name + " " + newSavingsGoal.goal + " " + SavingsGoal.parseDate(newSavingsGoal)
-        
-    return render_template('createsavingsgoal.html')
+            request.form.get("goal"), 
+            datetime(int(request.form.get("year")),
+            int(request.form.get("month")),
+            int(request.form.get("day"))))
+        return index()
+    return render_template('createsavingsgoal.html', currentyear=datetime.today().year)
 
 # Home Page route
 @app.route('/', methods =["GET", "POST"])
@@ -76,7 +78,6 @@ def subscription_form():
             request.form.get('cost'),
             request.form.get('date'),
             request.form.get('stype'))
-
         
         dataset.append(formData)
         return index()

@@ -10,10 +10,10 @@
     <h1>New Savings Goal</h1>
     <form action="{{url_for('create_savings_goal')}}" method="post">
         <label for = "GoalName">Goal Name:</label>
-        <input id = "GoalName" name="goalname" type = "text">
+        <input id = "GoalName" name="goalname" type = "text" required>
         <br>
         <label for = "Goal">Goal:</label>
-        <input id = "Goal" name="goal" type = "text">
+        <input id = "Goal" name="goal" type="number" required>
         <br>
         <p>Deadline:</p>
         <label for="month">Month:</label>
@@ -32,9 +32,9 @@
             <option value=12>December</option>
         </select>
         <label for="day">Day:</label>
-        <input id="day" name="day" type="number">
+        <input id="day" name="day" type="number" min="1" max="31" required>
         <label for="year">Year:</label>
-        <input id="year" name="year" type="number">
+        <input id="year" name="year" type="number" min="{{currentyear}}" required>
         <br>
         <input type="submit" value="Create">
     </form>
