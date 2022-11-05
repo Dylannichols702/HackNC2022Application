@@ -12,11 +12,11 @@
     
     <form method="post">
         <label for="pname">Payment Name:</label>
-        <input type="text" id="pname" name="pname">
+        <input type="text" id="pname" name="pname" required>
         <br>
 
         <label for="ptype">Payment Type:</label>
-        <select name="ptype" class="Input">
+        <select name="ptype" class="Input" required>
             {% for o in data %}
             <option value="{{ o.name }}">{{ o.name }}</option>
             {% endfor %}
@@ -24,7 +24,7 @@
         <br>
 
         <label for="cost">Cost: $</label>
-        <input type="text" id="cost" name="cost">
+        <input type="text" id="cost" name="cost" required>
         <br><br>
 
         <input type="submit" value="Submit">

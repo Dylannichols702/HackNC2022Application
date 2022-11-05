@@ -10,28 +10,29 @@
 <body>
     <h1>Add a new subscription:</h1>
     
-    <form action="/postsubscriptionform" method="post">
+    <form method="post">
         <label for="pname">Subcription Name:</label>
-        <input type="text" id="pname" name="pname">
+        <input type="text" id="pname" name="pname" required>
         <br>
 
         <label for="ptype">Payment Type:</label>
-        <select name="ptype" class="Input">
-            {% for o in data %}
-            <option value="{{ o }}">{{ o }}</option>
+        <select name="ptype" class="Input" required>
+            {% for o in paymentTypes %}
+            <option value="{{ o.name }}">{{ o.name }}</option>
             {% endfor %}
         </select>
         <br>
 
         <label>Subscription Type:</label>
-        <select name="ptype" class="Input">
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
+        <select name="stype" class="Input" required>
+            {% for o in renewalTypes %}
+            <option value="{{ o.name }}">{{ o.name }}</option>
+            {% endfor %}
         </select>
         <br>
 
         <label for="cost">Cost:</label>
-        <input type="text" id="cost" name="cost">
+        <input type="text" id="cost" name="cost" required>
         <br><br>
 
         <input type="submit" value="Submit">
