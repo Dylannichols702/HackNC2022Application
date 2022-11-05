@@ -27,12 +27,13 @@ button, input[type=submit]{
   margin: 10px;
 }
 
-input[type=text]{
+input[type=text] {
   margin-top: 25px;
   margin-bottom: 25px;
 }
 
 select{
   background-color: rgb(255, 255, 255);
-  
+  margin-top: 25px;
+  margin-bottom: 25px;
 }

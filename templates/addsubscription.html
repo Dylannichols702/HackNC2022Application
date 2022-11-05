@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Addition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Subscription Addition</title>
 </head>
 
 <body>
-    <h1>Add a new subscription:</h1>
+    <h1>New Subscription</h1>
     
     <form method="post">
         <label for="pname">Subcription Name:</label>
@@ -37,7 +38,7 @@
 
         <input type="submit" value="Submit">
     </form>
-    <a href="/"><button>Back</button></a>
+    <a href="/home"><button>Back</button></a>
 
 </body>
 </html>
