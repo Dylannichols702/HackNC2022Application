@@ -11,35 +11,36 @@ conn = psycopg2.connect(
 
 # Open a cursor to perform database operations
 cur = conn.cursor()
+cur.execute('DROP TABLE IF EXISTS person CASCADE;')
 
+cur.execute('CREATE TABLE person(id SERIAL PRIMARY KEY, name TEXT);')
+
+cur.execute('DROP TABLE IF EXISTS budget CASCADE;')
+cur.execute('CREATE TABLE budget(user_id SERIAL,budget_id SERIAL PRIMARY KEY,overall_budget_limit double precision,budget_amount double precision,FOREIGN KEY (user_id) REFERENCES person(id));')
+cur.execute('DROP TABLE IF EXISTS category CASCADE;')
+cur.execute('CREATE TABLE category(name TEXT PRIMARY KEY,budget_id SERIAL,FOREIGN KEY (budget_id) REFERENCES budget(budget_id));')
+cur.execute('DROP TABLE IF EXISTS login CASCADE;')
+cur.execute('CREATE TABLE login(user_id SERIAL,password TEXT UNIQUE,user_name TEXT UNIQUE,FOREIGN KEY (user_id) REFERENCES person(id));')
+cur.execute('DROP TABLE IF EXISTS payment CASCADE;')
+cur.execute('CREATE TABLE payment(payment_id SERIAL PRIMARY KEY,user_id SERIAL,name TEXT,cost double precision, category_name TEXT,type_of_payment TEXT,due_date DATE,FOREIGN KEY (user_id) REFERENCES person(id),FOREIGN KEY (category_name) REFERENCES category(name));')
+
+cur.execute('DROP TABLE IF EXISTS saving_goals CASCADE;')
+cur.execute('CREATE TABLE saving_goals(user_id SERIAL,name TEXT,amount double precision,dead_line date,FOREIGN KEY (user_id) REFERENCES person(id));')
+
+cur.execute('INSERT INTO person(id,name)'
+'VALUES(%s,%s)',(1,'bob'))
+cur.execute('INSERT INTO saving_goals(name,amount,dead_line)'
+'VALUES(%s,%s,%s)',
+('bob',22.22,'2022-02-22'))
 # Execute a command: this creates a new table
-cur.execute('DROP TABLE IF EXISTS books;')
-cur.execute('CREATE TABLE books (id serial PRIMARY KEY,'
-                                 'title varchar (150) NOT NULL,'
-                                 'author varchar (50) NOT NULL,'
-                                 'pages_num integer NOT NULL,'
-                                 'review text,'
-                                 'date_added date DEFAULT CURRENT_TIMESTAMP);'
-                                 )
+
 
 # Insert data into the table
 
-cur.execute('INSERT INTO books (title, author, pages_num, review)'
-            'VALUES (%s, %s, %s, %s)',
-            ('A Tale of Two Cities',
-             'Charles Dickens',
-             489,
-             'A great classic!')
-            )
 
 
-cur.execute('INSERT INTO books (title, author, pages_num, review)'
-            'VALUES (%s, %s, %s, %s)',
-            ('Anna Karenina',
-             'Leo Tolstoy',
-             864,
-             'Another great classic!')
-            )
+
+
 
 conn.commit()
 

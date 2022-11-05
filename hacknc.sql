@@ -43,3 +43,15 @@ CREATE TABLE payment(
     FOREIGN KEY (category_name) REFERENCES category(name)
 
 );
+
+DROP TABLE IF EXISTS saving_goals CASCADE;
+CREATE TABLE saving_goals(
+    user_id SERIAL DEFAULT NULL,
+    name TEXT,
+    amount double precision,
+    dead_line date,
+    FOREIGN KEY (user_id) REFERENCES person(id)
+);
+
+INSERT INTO saving_goals(name,amount,dead_line)
+    VALUES('bob','22.22','2022-02-22');
