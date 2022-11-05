@@ -48,7 +48,7 @@ def create_savings_goal():
             int(request.form.get("day"))))
         # Put database writing stuff here :)
         return index()
-    return render_template('createsavingsgoal.html', currentyear=datetime.today().year)
+    return render_template('addsavingsgoal.html', currentyear=datetime.today().year)
 
 # Home Page route
 @app.route('/', methods =["GET", "POST"])
