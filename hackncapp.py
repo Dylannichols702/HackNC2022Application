@@ -7,7 +7,7 @@ from datetime import datetime
 # current module (__name__) as argument.
 app = Flask(__name__)
 
-data = {'paymentTypes': {'type': "Entertainment",'type': "Bill",'type': "Something Else"}, 'payments': []}
+dataset = {'payment_types': ["Entertainment", "Bill", "Something Else"], 'payments': []}
 
 # Define Savings Goal class
 class SavingsGoal:
@@ -34,11 +34,11 @@ def create_savings_goal():
 @app.route('/', methods =["GET", "POST"])
 # ‘/’ URL is bound with hello_world() function.
 def index():
-    return render_template('index.html')
+    return render_template('index.html', data=dataset)
 
 @app.route('/paymentform', methods=["GET","POST"])
 def payment_form():
-    return render_template('paymentadditionform.html', data=data)
+    return render_template('paymentadditionform.html', data=dataset['payment_types'])
 
 @app.route('/postpaymentform', methods=['POST', 'GET'])
 def newPayment():
@@ -48,7 +48,7 @@ def newPayment():
             'amount': request.form.get('cost'), 
             'type': request.form.get('ptype')}
         
-        data.payments.append(formData)
+        dataset['payments'].append(formData)
         return index()
 
     return index()
