@@ -44,6 +44,7 @@ def create_savings_goal():
             datetime(int(request.form.get("year")),
             int(request.form.get("month")),
             int(request.form.get("day"))))
+        # Put database writing stuff here :)
         return index()
     return render_template('createsavingsgoal.html', currentyear=datetime.today().year)
 

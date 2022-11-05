@@ -12,8 +12,38 @@
     <a href="/createsavingsgoal"><button>Create Savings Goal</button></a>
     <a href="/paymentform"><button>Add Payment</button></a>
 
-    {% for payment in data %}
+    <table>
+        <tr>
+            <th>Entertainment</th>
+        </tr> 
+        <tr>
+            <td>Test</td>
+            <td>$0.00</td>
+        </tr>  
+    </table>
+
+    <table>
+        <tr>
+            <th>Bills</th>
+        </tr> 
+        <tr>
+            <td>Test</td>
+            <td>$0.00</td>
+        </tr>  
+    </table>
+
+    <table>
+        <tr>
+            <th>Other</th>
+        </tr> 
+        <tr>
+            <td>Test</td>
+            <td>$0.00</td>
+        </tr>  
+    </table>
+
+    <!--{% for payment in data %}
         <h2>{{ payment.name }}: Payed ${{ payment.cost }} for {{ payment.category }}</h1>
-    {% endfor %}
+    {% endfor %}-->
 </body>
 </html>
