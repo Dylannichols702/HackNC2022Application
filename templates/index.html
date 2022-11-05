@@ -8,7 +8,36 @@
 </head>
 
 <body>
-    <h1>Hello User</h1>
-    <button onclick="window.location.href='https://w3docs.com';"></button>
+    <h1>New Savings Goal</h1>
+    <form>
+        <label for = "GoalName">Goal Name:</label>
+        <input id = "GoalName" type = "text">
+        <br>
+        <label for = "Goal">Goal:</label>
+        <input id = "Goal" type = "text">
+        <br>
+        <p>Deadline:</p>
+        <label for="Month">Month:</label>
+        <select id="Month" name="Month">
+            <option>January</option>
+            <option>February</option>
+            <option>March</option>
+            <option>April</option>
+            <option>May</option>
+            <option>June</option>
+            <option>July</option>
+            <option>August</option>
+            <option>September</option>
+            <option>October</option>
+            <option>November</option>
+            <option>December</option>
+        </select>
+        <label for="Day">Day:</label>
+        <input id="Day" type="text">
+        <label for="Year">Year:</label>
+        <input id="Year" type="text">
+        <br>
+        <input type="submit" value="Create">
+    </form>
 </body>
 </html>
