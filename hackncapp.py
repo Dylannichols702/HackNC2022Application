@@ -23,9 +23,21 @@ app = Flask(__name__)
 # The route() function of the Flask class is a decorator,
 # which tells the application which URL should call
 # the associated function.
+@app.route('/createsavingsgoal', methods =["GET", "POST"])
+def create_savings_goal():
+    if request.method == "POST":
+        newSavingsGoal = SavingsGoal(request.form.get("goalname"), request.form.get("goal"), datetime.today())
+        return newSavingsGoal.name + " " + newSavingsGoal.goal
+        
+    return render_template('createsavingsgoal.html')
+
 @app.route('/', methods =["GET", "POST"])
 # ‘/’ URL is bound with hello_world() function.
-def hello_world():
+def index():
+    return render_template('index.html')
+
+@app.route('/paymentform', methods=["GET","POST"])
+def payment_form():
     return render_template('paymentadditionform.html', data=data)
 
 @app.route('/postpaymentform', methods=['POST', 'GET'])
@@ -37,9 +49,9 @@ def newPayment():
             'type': request.form.get('ptype')}
         
         data.payments.append(formData)
-        return hello_world()
+        return index()
 
-    return hello_world()
+    return index()
 
 # main driver function
 if __name__ == '__main__':
