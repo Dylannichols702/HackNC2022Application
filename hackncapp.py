@@ -26,6 +26,7 @@ class SavingsGoal:
 class Payment:
     def __init__(self, category, issub, name, cost, date, renewal_type):
         self.category = category
+        self.issub = issub
         self.name = name
         self.cost = cost 
         self.date = date

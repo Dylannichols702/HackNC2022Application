@@ -1,0 +1,25 @@
+body {
+    background-color: rgb(255, 255, 255);
+    font-family: Trebuchet MS, sans-serif;
+  }
+
+h1 {
+    color: rgb(255, 94, 0);
+    font-weight: bolder;
+  }
+
+p {
+    color: rgb(28, 28, 28);
+  }
+
+table{
+  margin-right: 10px; margin-left: 10px;
+  }
+
+button{
+  background-color: rgb(255, 94, 0);
+  border: none;
+  color: rgb(255, 255, 255);
+  padding: 10px;
+  font-weight: bolder;
+}

@@ -4,20 +4,40 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <title>Payment Addition</title>
 </head>
 
 <body>
     <h1>Welcome, User</h1>
-    <a href="/createsavingsgoal"><button>Create Savings Goal</button></a>
-    <a href="/paymentform"><button>Add Payment</button></a>
-    <a href="/subscriptionform"><button>Add Subscription</button></a>
 
+<<<<<<< Updated upstream
     <h1>{{dataset}}</h1>
 
     {% for paytype,payments in data.items() %}
+=======
+    <table style="display: inline-block;">
+        <tr>
+            <th>Entertainment</th>
+        </tr> 
+        <tr>
+            <td>Test</td>
+            <td>$0.00</td>
+        </tr>  
+    </table>
 
-    <table>
+    <table style="float: left;">
+        <tr>
+            <th>Bills</th>
+        </tr> 
+        <tr>
+            <td>Test</td>
+            <td>$0.00</td>
+        </tr>  
+    </table>
+>>>>>>> Stashed changes
+
+    <table style="float: left;">
         <tr>
             <th>{{ paytype }}</th>
         </tr> 
@@ -30,6 +50,11 @@
         {% endfor %}
 
     </table>
+    <br>
+
+    <a href="/createsavingsgoal"><button>Create Savings Goal</button></a>
+    <a href="/paymentform"><button>Add Payment</button></a>
+    <a href="/subscriptionform"><button>Add Subscription</button></a>
 
     {% endfor %}
 
