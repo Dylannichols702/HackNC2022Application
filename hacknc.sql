@@ -1,17 +1,19 @@
+DROP TABLE IF EXISTS person CASCADE; -- Why do we need this to be a cascade? I deleted the if exists because it gave me an error at the end.
+CREATE TABLE person(
+    id SERIAL PRIMARY KEY,
+    name TEXT
+);
+
 DROP TABLE IF EXISTS budget CASCADE;
 CREATE TABLE budget(
     user_id SERIAL,
     budget_id SERIAL PRIMARY KEY,
     overall_budget_limit double precision,
     budget_amount double precision,
-    FOREIGN KEY (user_id) REFERENCEs person(id)
+    FOREIGN KEY (user_id) REFERENCES person(id)
 );
 
-DROP TABLE IF EXISTS person CASCADE; -- Why do we need this to be a cascade? I deleted the if exists because it gave me an error at the end.
-CREATE TABLE person(
-    id SERIAL PRIMARY KEY,
-    name TEXT
-);
+
 
 DROP TABLE IF EXISTS category CASCADE;
 CREATE TABLE category(
