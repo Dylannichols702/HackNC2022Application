@@ -1,34 +1,43 @@
+DROP TABLE IF EXISTS budget CASCADE;
+CREATE TABLE budget(
+    user_id SERIAL,
+    budget_id SERIAL PRIMARY KEY,
+    overall_budget_limit double precision,
+    budget_amount double precision,
+    FOREIGN KEY (user_id) REFERENCEs person(id)
+);
 
-DROP TABLE IF EXISTS user CASCADE; -- Why do we need this to be a cascade?
-CREATE TABLE user (
+DROP TABLE IF EXISTS person CASCADE; -- Why do we need this to be a cascade? I deleted the if exists because it gave me an error at the end.
+CREATE TABLE person(
     id SERIAL PRIMARY KEY,
-    name TEXT,
-    overall_budget double precision
+    name TEXT
 );
 
 DROP TABLE IF EXISTS category CASCADE;
 CREATE TABLE category(
     name TEXT PRIMARY KEY,
-    budget double precision 
+    budget_id SERIAL,
+    FOREIGN KEY (budget_id) REFERENCES budget(budget_id)
 );
 
 DROP TABLE IF EXISTS login CASCADE;
 CREATE TABLE login(
-    user_id TEXT PRIMARY KEY,
-    password UNIQUE TEXT
-    username UNIQUE TEXT,
-    FOREIGN KEY (user_id) REFERENCES user(id)
+    user_id SERIAL,
+    password TEXT UNIQUE,
+    user_name TEXT UNIQUE,
+    FOREIGN KEY (user_id) REFERENCES person(id)
 );
 
 DROP TABLE IF EXISTS payment CASCADE;
-CREATE TABLE payment (
+CREATE TABLE payment(
     payment_id SERIAL PRIMARY KEY,
     user_id SERIAL,
     name TEXT,
     cost double precision,  -- might change to save space 
-    category_name TEXT REFERENCES category(name),
+    category_name TEXT,
     type_of_payment TEXT,
-    due_date DATE
-    FOREIGN KEY (user_id) REFERENCES user(id)
+    due_date DATE,
+    FOREIGN KEY (user_id) REFERENCES person(id),
+    FOREIGN KEY (category_name) REFERENCES category(name)
 
 );
