@@ -10,7 +10,7 @@
 <body>
     <h1>Record a new payment:</h1>
     
-    <form action="/postpaymentform" method="post">
+    <form method="post">
         <label for="pname">Payment Name:</label>
         <input type="text" id="pname" name="pname">
         <br>
@@ -18,7 +18,7 @@
         <label for="ptype">Payment Type:</label>
         <select name="ptype" class="Input">
             {% for o in data %}
-            <option value="{{ o }}">{{ o }}</option>
+            <option value="{{ o.name }}">{{ o.name }}</option>
             {% endfor %}
         </select>
         <br>
