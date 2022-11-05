@@ -7,7 +7,7 @@ from datetime import datetime
 # current module (__name__) as argument.
 app = Flask(__name__)
 
-data = [{'type': "Entertainment"},{'type': "Bill"},{'type': "Something Else"}]
+dataset = {'payment_types': ["Entertainment", "Bill", "Something Else"], 'payments': []}
 
 # Define Savings Goal class
 class SavingsGoal:
@@ -44,24 +44,24 @@ def create_savings_goal():
 # Home Page
 @app.route('/', methods =["GET", "POST"])
 def index():
-    return render_template('index.html')
+    return render_template('index.html', data=dataset)
 
 @app.route('/paymentform', methods=["GET","POST"])
 def payment_form():
-    return render_template('paymentadditionform.html', data=data)
+    return render_template('paymentadditionform.html', data=dataset['payment_types'])
 
-@app.route('/postform', methods=['POST', 'GET'])
-def acceptFormData():
+@app.route('/postpaymentform', methods=['POST', 'GET'])
+def newPayment():
     if request.method == 'POST':
         formData = {
             'name': request.form.get('pname'),
             'amount': request.form.get('cost'), 
             'type': request.form.get('ptype')}
         
-        print(request)
-        return render_template('postformtest.html', data=formData)
+        dataset['payments'].append(formData)
+        return index()
 
-    return render_template('index.html', data=data)
+    return index()
 
 # main driver function
 if __name__ == '__main__':
