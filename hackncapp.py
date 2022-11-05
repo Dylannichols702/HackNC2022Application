@@ -72,14 +72,18 @@ def index():
 @app.route('/paymentform', methods=["GET","POST"])
 def payment_form():
     if request.method == 'POST':
-        formData = Payment(request.form.get('ptype'),
+        type = request.form.get('ptype')
+        formData = Payment(type,
             False,
             request.form.get('pname'),
             request.form.get('cost'),
             request.form.get('date'),
             RenewalType["None"])
         
-        dataset.append(formData)
+        if type in dataset:
+            dataset[type].append(formData)
+        else:
+            dataset[type] = [formData]
         return index()
 
     return render_template('addpayment.html', data=PaymentCategory)
@@ -88,14 +92,18 @@ def payment_form():
 @app.route('/subscriptionform', methods=["GET","POST"])
 def subscription_form():
     if request.method == 'POST':
-        formData = Payment(request.form.get('ptype'), 
+        type = request.form.get('ptype')
+        formData = Payment(type, 
             True,
             request.form.get('pname'),
             request.form.get('cost'),
             request.form.get('date'),
             request.form.get('stype'))
         
-        dataset.append(formData)
+        if type in dataset:
+            dataset[type].append(formData)
+        else:
+            dataset[type] = [formData]
         return index()
 
     return render_template('addsubscription.html', paymentTypes=PaymentCategory, renewalTypes=RenewalType)
