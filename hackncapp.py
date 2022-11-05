@@ -15,6 +15,15 @@ class SavingsGoal:
         self.name = name
         self.goal = goal
         self.deadline = deadline
+    def parseDate(self):
+        return str(self.deadline.year) + "-" + str(self.deadline.month) + "-" + str(self.deadline.day)
+
+# Define Subscription Class
+class Subscription:
+    def __init__(self, name, cost, renewaldate):
+        self.name = name
+        self.cost = cost
+        self.renewaldate = renewaldate
 
 # Flask constructor takes the name of
 # current module (__name__) as argument.
@@ -26,13 +35,14 @@ app = Flask(__name__)
 @app.route('/createsavingsgoal', methods =["GET", "POST"])
 def create_savings_goal():
     if request.method == "POST":
-        newSavingsGoal = SavingsGoal(request.form.get("goalname"), request.form.get("goal"), datetime.today())
-        return newSavingsGoal.name + " " + newSavingsGoal.goal
+        newSavingsGoal = SavingsGoal(request.form.get("goalname"),
+            request.form.get("goal"), datetime(2022,5,14))
+        return newSavingsGoal.name + " " + newSavingsGoal.goal + " " + SavingsGoal.parseDate(newSavingsGoal)
         
     return render_template('createsavingsgoal.html')
 
+# Home Page
 @app.route('/', methods =["GET", "POST"])
-# ‘/’ URL is bound with hello_world() function.
 def index():
     return render_template('index.html')
 
