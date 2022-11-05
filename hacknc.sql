@@ -1,6 +1,6 @@
 
-DROP TABLE IF EXISTS person CASCADE;
-CREATE TABLE person (
+DROP TABLE IF EXISTS user CASCADE; -- Why do we need this to be a cascade?
+CREATE TABLE user (
     id SERIAL PRIMARY KEY,
     name TEXT,
     overall_budget double precision
@@ -10,6 +10,14 @@ DROP TABLE IF EXISTS category CASCADE;
 CREATE TABLE category(
     name TEXT PRIMARY KEY,
     budget double precision 
+);
+
+DROP TABLE IF EXISTS login CASCADE;
+CREATE TABLE login(
+    user_id TEXT PRIMARY KEY,
+    password TEXT
+    username TEXT,
+    FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
 DROP TABLE IF EXISTS payment CASCADE;
