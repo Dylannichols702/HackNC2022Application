@@ -34,7 +34,11 @@ def create_savings_goal():
 @app.route('/', methods =["GET", "POST"])
 # ‘/’ URL is bound with hello_world() function.
 def index():
-    return render_template('index.html', data=data)
+    return render_template('index.html')
+
+@app.route('/paymentform', methods=["GET","POST"])
+def payment_form():
+    return render_template('paymentadditionform.html', data=data)
 
 @app.route('/postform', methods=['POST', 'GET'])
 def acceptFormData():
