@@ -2,12 +2,15 @@
 # An object of Flask class is our WSGI application.
 from flask import Flask, render_template, request
 from datetime import datetime
+from enum import Enum
 
 # Flask constructor takes the name of
 # current module (__name__) as argument.
 app = Flask(__name__)
 
-dataset = {'payment_types': ["Entertainment", "Bill", "Something Else"], 'payments': []}
+PaymentCategory = Enum("PaymentCategory",["Entertainment", "Bill", "Something Else"])
+
+dataset = []
 
 # Define Savings Goal class
 class SavingsGoal:
@@ -18,12 +21,13 @@ class SavingsGoal:
     def parseDate(self):
         return str(self.deadline.year) + "-" + str(self.deadline.month) + "-" + str(self.deadline.day)
 
-# Define Subscription Class
-class Subscription:
-    def __init__(self, name, cost, renewaldate):
+# Define Payment Class
+class Payment:
+    def __init__(self, category, issub, name, cost):
+        self.category = category
+        self.issub = issub
         self.name = name
-        self.cost = cost
-        self.renewaldate = renewaldate
+        self.cost = cost 
 
 # Flask constructor takes the name of
 # current module (__name__) as argument.
@@ -36,32 +40,34 @@ app = Flask(__name__)
 def create_savings_goal():
     if request.method == "POST":
         newSavingsGoal = SavingsGoal(request.form.get("goalname"),
-            request.form.get("goal"), datetime(2022,5,14))
+            request.form.get("goal"), datetime(int(request.form.get("year")),int(request.form.get("month")),int(request.form.get("day"))))
         return newSavingsGoal.name + " " + newSavingsGoal.goal + " " + SavingsGoal.parseDate(newSavingsGoal)
         
     return render_template('createsavingsgoal.html')
 
-# Home Page
+# Home Page route
 @app.route('/', methods =["GET", "POST"])
 def index():
     return render_template('index.html', data=dataset)
 
+# New Payment Form Page route
 @app.route('/paymentform', methods=["GET","POST"])
 def payment_form():
-    return render_template('paymentadditionform.html', data=dataset['payment_types'])
-
-@app.route('/postpaymentform', methods=['POST', 'GET'])
-def newPayment():
     if request.method == 'POST':
-        formData = {
-            'name': request.form.get('pname'),
-            'amount': request.form.get('cost'), 
-            'type': request.form.get('ptype')}
+        formData = Payment(request.form.get('ptype'), 
+            request.form.getlist('sub'), 
+            request.form.get('pname'),
+            request.form.get('cost'))
+        # {
+            # 'name': request.form.get('pname'),
+            # 'amount': request.form.get('cost'), 
+            # 'type': request.form.get('ptype')
+        # }
         
-        dataset['payments'].append(formData)
+        dataset.append(formData)
         return index()
 
-    return index()
+    return render_template('paymentadditionform.html', data=PaymentCategory)
 
 # main driver function
 if __name__ == '__main__':
