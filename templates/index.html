@@ -39,5 +39,9 @@
         <br>
         <input type="submit" value="Create">
     </form>
+
+    {% for payment in data.payments %}
+        <h2>{{ payment.name }}: Payed ${{ payment.amount }} for {{ payment.type }}</h1>
+    {% endfor %}
 </body>
 </html>

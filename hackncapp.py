@@ -7,7 +7,7 @@ from datetime import datetime
 # current module (__name__) as argument.
 app = Flask(__name__)
 
-data = [{'type': "Entertainment"},{'type': "Bill"},{'type': "Something Else"}]
+data = {'paymentTypes': {'type': "Entertainment",'type': "Bill",'type': "Something Else"}, 'payments': []}
 
 # Define Savings Goal class
 class SavingsGoal:
@@ -26,20 +26,20 @@ app = Flask(__name__)
 @app.route('/', methods =["GET", "POST"])
 # ‘/’ URL is bound with hello_world() function.
 def hello_world():
-    return render_template('index.html', data=data)
+    return render_template('paymentadditionform.html', data=data)
 
-@app.route('/postform', methods=['POST', 'GET'])
-def acceptFormData():
+@app.route('/postpaymentform', methods=['POST', 'GET'])
+def newPayment():
     if request.method == 'POST':
         formData = {
             'name': request.form.get('pname'),
             'amount': request.form.get('cost'), 
             'type': request.form.get('ptype')}
         
-        print(request)
-        return render_template('postformtest.html', data=formData)
+        data.payments.append(formData)
+        return hello_world()
 
-    return render_template('index.html', data=data)
+    return hello_world()
 
 # main driver function
 if __name__ == '__main__':
