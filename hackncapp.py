@@ -11,7 +11,7 @@ app = Flask(__name__)
 PaymentCategory = Enum("PaymentCategory",["Entertainment", "Bill", "Something Else"])
 RenewalType = Enum("RenewalType",["Monthly", "Yearly", "None"])
 
-dataset = []
+dataset = {}
 
 # Define Savings Goal class
 class SavingsGoal:
@@ -35,9 +35,14 @@ class Payment:
 # current module (__name__) as argument.
 app = Flask(__name__)
 
-# The route() function of the Flask class is a decorator,
-# which tells the application which URL should call
-# the associated function.
+
+# Home Page route
+@app.route('/', methods =["GET", "POST"])
+def index():
+    return render_template('index.html', data=dataset)
+
+
+# Create Saving Goal Form Route
 @app.route('/createsavingsgoal', methods =["GET", "POST"])
 def create_savings_goal():
     if request.method == "POST":
@@ -50,22 +55,22 @@ def create_savings_goal():
         return index()
     return render_template('createsavingsgoal.html', currentyear=datetime.today().year)
 
-# Home Page route
-@app.route('/', methods =["GET", "POST"])
-def index():
-    return render_template('index.html', data=dataset)
-
 # New Payment Form Page route
 @app.route('/paymentform', methods=["GET","POST"])
 def payment_form():
     if request.method == 'POST':
-        formData = Payment(request.form.get('ptype'),
+        type = request.form.get('ptype')
+        formData = Payment(type,
+            False,
             request.form.get('pname'),
             request.form.get('cost'),
             request.form.get('date'),
             RenewalType["None"])
         
-        dataset.append(formData)
+        if not type in dataset:
+            dataset[type] = [formData]
+        else:
+            dataset[type].append(formData)
         return index()
 
     return render_template('addpayment.html', data=PaymentCategory)
@@ -74,13 +79,18 @@ def payment_form():
 @app.route('/subscriptionform', methods=["GET","POST"])
 def subscription_form():
     if request.method == 'POST':
-        formData = Payment(request.form.get('ptype'), 
+        type = request.form.get('ptype')
+        formData = Payment(type, 
+            True,
             request.form.get('pname'),
             request.form.get('cost'),
             request.form.get('date'),
             request.form.get('stype'))
         
-        dataset.append(formData)
+        if not type in dataset:
+            dataset[type] = [formData]
+        else:
+            dataset[type].append(formData)
         return index()
 
     return render_template('addsubscription.html', paymentTypes=PaymentCategory, renewalTypes=RenewalType)

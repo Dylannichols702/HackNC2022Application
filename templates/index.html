@@ -13,35 +13,25 @@
     <a href="/paymentform"><button>Add Payment</button></a>
     <a href="/subscriptionform"><button>Add Subscription</button></a>
 
-    <table>
-        <tr>
-            <th>Entertainment</th>
-        </tr> 
-        <tr>
-            <td>Test</td>
-            <td>$0.00</td>
-        </tr>  
-    </table>
+    <h1>{{dataset}}</h1>
+
+    {% for paytype,payments in data.items() %}
 
     <table>
         <tr>
-            <th>Bills</th>
+            <th>{{ paytype }}</th>
         </tr> 
+
+        {% for payment in payments %}
         <tr>
-            <td>Test</td>
-            <td>$0.00</td>
+            <td>{{payment.name}}</td>
+            <td>{{payment.cost}}</td>
         </tr>  
+        {% endfor %}
+
     </table>
 
-    <table>
-        <tr>
-            <th>Other</th>
-        </tr> 
-        <tr>
-            <td>Test</td>
-            <td>$0.00</td>
-        </tr>  
-    </table>
+    {% endfor %}
 
     <!--{% for payment in data %}
         <h2>{{ payment.name }}: Payed ${{ payment.cost }} for {{ payment.category }}</h1>
