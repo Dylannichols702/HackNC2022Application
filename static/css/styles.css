@@ -1,6 +1,7 @@
 body {
     background-color: rgb(255, 255, 255);
     font-family: Trebuchet MS, sans-serif;
+    text-align: center;
   }
 
 h1 {
@@ -13,13 +14,25 @@ p {
   }
 
 table{
-  margin-right: 10px; margin-left: 10px;
+  margin-right: 10px; 
+  margin-left: 10px;
   }
 
-button{
+button, input[type=submit]{
   background-color: rgb(255, 94, 0);
   border: none;
   color: rgb(255, 255, 255);
   padding: 10px;
   font-weight: bolder;
+  margin: 10px;
+}
+
+input[type=text]{
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+select{
+  background-color: rgb(255, 255, 255);
+  
 }

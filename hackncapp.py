@@ -32,18 +32,18 @@ class Payment:
         self.date = date
         self.renewal_type = renewal_type
 
+class LoginInfo:
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
 # Flask constructor takes the name of
 # current module (__name__) as argument.
 app = Flask(__name__)
 
-
-# Home Page route
-@app.route('/', methods =["GET", "POST"])
-def index():
-    return render_template('index.html', data=dataset)
-
-
-# Create Saving Goal Form Route
+# The route() function of the Flask class is a decorator,
+# which tells the application which URL should call
+# the associated function.
 @app.route('/createsavingsgoal', methods =["GET", "POST"])
 def create_savings_goal():
     if request.method == "POST":
@@ -53,25 +53,33 @@ def create_savings_goal():
             int(request.form.get("month")),
             int(request.form.get("day"))))
         # Put database writing stuff here :)
-        return index()
     return render_template('addsavingsgoal.html', currentyear=datetime.today().year)
+
+@app.route('/', methods=["GET","POST"])
+def login():
+    if request.method == 'POST':
+        newLoginInfo = LoginInfo(request.form.get("username"), 
+            request.form.get("password"))
+        return index()
+    return render_template('login.html')
+
+# Home Page route
+@app.route('/home', methods =["GET", "POST"])
+def index():
+    return render_template('index.html', data=dataset)
 
 # New Payment Form Page route
 @app.route('/paymentform', methods=["GET","POST"])
 def payment_form():
     if request.method == 'POST':
-        type = request.form.get('ptype')
-        formData = Payment(type,
+        formData = Payment(request.form.get('ptype'),
             False,
             request.form.get('pname'),
             request.form.get('cost'),
             request.form.get('date'),
             RenewalType["None"])
         
-        if not type in dataset:
-            dataset[type] = [formData]
-        else:
-            dataset[type].append(formData)
+        dataset.append(formData)
         return index()
 
     return render_template('addpayment.html', data=PaymentCategory)
@@ -80,18 +88,14 @@ def payment_form():
 @app.route('/subscriptionform', methods=["GET","POST"])
 def subscription_form():
     if request.method == 'POST':
-        type = request.form.get('ptype')
-        formData = Payment(type, 
+        formData = Payment(request.form.get('ptype'), 
             True,
             request.form.get('pname'),
             request.form.get('cost'),
             request.form.get('date'),
             request.form.get('stype'))
         
-        if not type in dataset:
-            dataset[type] = [formData]
-        else:
-            dataset[type].append(formData)
+        dataset.append(formData)
         return index()
 
     return render_template('addsubscription.html', paymentTypes=PaymentCategory, renewalTypes=RenewalType)
