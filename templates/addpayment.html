@@ -8,30 +8,23 @@
 </head>
 
 <body>
-    <h1>Add a new payment:</h1>
+    <h1>Record a new payment:</h1>
     
     <form method="post">
         <label for="pname">Payment Name:</label>
-        <input type="text" id="pname" name="pname">
-        <br>
-
-        <label>Subscription?:</label>
-        <input type="radio" id="syes" name="sub">
-        <label for="syes">Yes</label>
-        <input type="radio" id="sno" name="sub">
-        <label for="sno">No</label>
+        <input type="text" id="pname" name="pname" required>
         <br>
 
         <label for="ptype">Payment Type:</label>
-        <select name="ptype" class="Input">
+        <select name="ptype" class="Input" required>
             {% for o in data %}
             <option value="{{ o.name }}">{{ o.name }}</option>
             {% endfor %}
         </select>
         <br>
 
-        <label for="cost">Cost:</label>
-        <input type="text" id="cost" name="cost">
+        <label for="cost">Cost: $</label>
+        <input type="text" id="cost" name="cost" required>
         <br><br>
 
         <input type="submit" value="Submit">

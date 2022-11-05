@@ -9,6 +9,7 @@ from enum import Enum
 app = Flask(__name__)
 
 PaymentCategory = Enum("PaymentCategory",["Entertainment", "Bill", "Something Else"])
+RenewalType = Enum("RenewalType",["Monthly", "Yearly", "None"])
 
 dataset = []
 
@@ -23,11 +24,12 @@ class SavingsGoal:
 
 # Define Payment Class
 class Payment:
-    def __init__(self, category, issub, name, cost):
+    def __init__(self, category, issub, name, cost, date, renewal_type):
         self.category = category
-        self.issub = issub
         self.name = name
         self.cost = cost 
+        self.date = date
+        self.renewal_type = renewal_type
 
 # Flask constructor takes the name of
 # current module (__name__) as argument.
@@ -57,15 +59,31 @@ def index():
 @app.route('/paymentform', methods=["GET","POST"])
 def payment_form():
     if request.method == 'POST':
-        formData = Payment(request.form.get('ptype'), 
-            request.form.getlist('sub'), 
+        formData = Payment(request.form.get('ptype'),
             request.form.get('pname'),
-            request.form.get('cost'))
+            request.form.get('cost'),
+            request.form.get('date'),
+            RenewalType["None"])
         
         dataset.append(formData)
         return index()
 
-    return render_template('paymentadditionform.html', data=PaymentCategory)
+    return render_template('addpayment.html', data=PaymentCategory)
+
+# New Subscription Form Page Route
+@app.route('/subscriptionform', methods=["GET","POST"])
+def subscription_form():
+    if request.method == 'POST':
+        formData = Payment(request.form.get('ptype'), 
+            request.form.get('pname'),
+            request.form.get('cost'),
+            request.form.get('date'),
+            request.form.get('stype'))
+        
+        dataset.append(formData)
+        return index()
+
+    return render_template('addsubscription.html', paymentTypes=PaymentCategory, renewalTypes=RenewalType)
 
 # main driver function
 if __name__ == '__main__':
