@@ -48,7 +48,7 @@ class LoginInfo:
         self.password = password
 
 # Defines enum value for renewal types
-RenewalType = Enum("RenewalType",["Monthly", "Yearly", "None"])
+RenewalType = Enum("RenewalType",["Monthly", "Yearly", "Weekly", "None"])
 
 # Locally stored versions of every bill
 # TODO: Query database to populate this dataset when the app is loaded.
@@ -157,7 +157,8 @@ def subscription_form():
 
         return index()
 
-    return render_template('addsubscription.html', budgetCategories=budgetCategories, renewalTypes=RenewalType)
+    currentDay = datetime.today().date()
+    return render_template('addsubscription.html', budgetCategories=budgetCategories, renewalTypes=RenewalType, today=currentDay)
 
 # New Budget Category Page Route
 @app.route('/addbudgetcategory', methods=["GET","POST"])
