@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Add Savings Goal</title>
 </head>
 <body>
     <h1>New Savings Goal</h1>
@@ -36,7 +37,7 @@
         <label for="year">Year:</label>
         <input id="year" name="year" type="number" min="{{currentyear}}" required>
         <br>
-        <input type="submit" value="Create">
+        <input type="submit" value="Create" style="display: inline-block;">
     </form>
     <a href="/"><button>Back</button></a>
 </body>
