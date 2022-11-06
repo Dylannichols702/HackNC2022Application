@@ -16,7 +16,8 @@
     <h2>Remaining Budget: ${{ budgetCategory.budgetremaining }}</h2>
     <h2>Remaining Budget Percentage: {{ budgetCategory.budgetpercent }}%</h2>
 
-    <img src="data:image/png;base64, {{ plot_url }}">
+    <img style="width: 40%" src="data:image/png;base64, {{ plot_url[0] }}">
+    <img style="width: 40%" src="data:image/png;base64, {{ plot_url[1] }}">
 
     <table>
         <tr>

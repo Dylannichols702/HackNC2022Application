@@ -5,11 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="/scripts/scripts.js" defer></script>
     <title>Home Page</title>
 </head>
 
 <body>
-    <h1>Welcome, {{user}}</h1>
+    <h1>Welcome</h1>
+
+    <h2>Your budget this month is ${{ budget }}</h2>
+    <h2>So far you've spent ${{ currentMonthSpending }}</h2>
 
     <a href="/createsavingsgoal"><button>Create Savings Goal</button></a>
     <a href="/paymentform"><button>Add Payment</button></a>
@@ -41,14 +45,18 @@
         </div>
         {% endfor %}
     </div>
+<<<<<<< HEAD
     <table>
         <caption>Savings Goals</caption>
-        {% for savingsGoal in savingsGoals %}
+        {% for name,savingsGoal in savingsGoals.items() %}
         <tr>
             <td>{{ savingsGoal.name }}</td>
             <td>${{ savingsGoal.goal }}</td>
         </tr>
         {% endfor %}
     </table>
+=======
+    <!-- <a class="donut"></a> -->
+>>>>>>> sqlserver
 </body>
 </html>
