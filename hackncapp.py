@@ -228,6 +228,7 @@ def subscription_form():
         cur.execute('INSERT INTO category(name)'
         'VALUES(%s)',[formData.category])
         
+        
         cur.execute('INSERT INTO payment(user_id, name, cost, category_name, type_of_payment, subscription_type, due_date)'
         'VALUES(%s, %s, %s, %s, %s, %s, %s)',(CURRENT_GLOBAL_USER_ID, formData.name, formData.cost, formData.category,"Recurring payment", formData.renewal_type.name, formData.date))
         # cur.execute('INSERT INTO login(password,user_name)'
@@ -236,8 +237,22 @@ def subscription_form():
         cur.close()
         conn.close()
         
-        budgetCategories[type].items.append(formData)
-        return index()
+        # budgetCategories[type].items.append(formData)
+        # conn = psycopg2.connect(
+        # host="localhost",
+        # database="flask_db",
+        # user='mmaggiore',
+        # password='password')
+        # cur = conn.cursor()
+        
+        # last30payment=cur.execute('SELECT due_date, cost FROM Payment GROUP BY due_date HAVING CURRENT_DATE - 30 < due_date;')
+        
+        # print(last30payment)
+
+        # conn.commit()
+        # cur.close()
+        # conn.close()
+        # return index()
 
     return render_template('addsubscription.html', budgetCategories=budgetCategories, renewalTypes=RenewalType)
 
@@ -269,6 +284,11 @@ def generate_data():
             newDate = datetime.now
             newData = Payment(name, False, "random payment", "{:.2f}".format(random.random()*i) , newDate, RenewalType["None"])
             category.items.append(newData)
+    
+      
+    
+    
+    
 
 # main driver function
 if __name__ == '__main__':
