@@ -89,3 +89,22 @@ select{
   inset: 0;
   background: conic-gradient(var(--c) calc(var(--p)*1%),#0000 0);
 }
+
+/* Michael's stuff */
+.donut {
+  border: solid black;
+  border-color: #575757;
+  border-width: 50px;
+  width: 200px;
+  height: 100px;
+  padding: 100px;
+  padding-top: 80px;
+  align-items: center;
+  justify-content: center;
+  /* transition: 0.3s; */
+  transform: translate(-50%, -50%);
+  border-radius: 100%;
+  border-top: 50px solid #A9DC62;
+  border-left: 50px solid #78DCDC;
+  border-right: 50px solid #FFD862;
+}
