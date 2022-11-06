@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 import pandas as pd
+from dateutil.relativedelta import relativedelta
 
 # Create local database in the beginning
 def initialize_database():
@@ -159,7 +160,6 @@ def create_savings_goal():
 # Login page route
 @app.route('/', methods=["GET","POST"])
 def login():
-    clearEverything()
     initialize_database()
     if request.method == 'POST':
         newLoginInfo = LoginInfo(request.form.get("username"), 
@@ -180,7 +180,6 @@ def login():
         cur.close()
         conn.close()
         
-        generate_data()
         return render_template('index.html', user=newLoginInfo.username, data=budgetCategories)
     return render_template('login.html')
 
@@ -320,9 +319,11 @@ def category_breakdown(name):
         y.append(cost)
         x.append(f'{date.month}-{date.day}')
 
-    plt.title("Daily Expenses in Last 30 Days")
+    plt.title("Daily Expenses in Last 10 Days")
     plt.xlabel('Date (Month-Day)')
     plt.ylabel('Daily Expenses (Dollars)')
+    plt.xticks(fontsize=8, rotation=45)
+    plt.tight_layout()
     plt.plot(x,y)   
 
     plt.savefig(img, format='png')
@@ -347,6 +348,8 @@ def category_breakdown(name):
     plt.title("Cumulative Expenses in Last 30 Days")
     plt.xlabel('Date (Month-Day)')
     plt.ylabel('Total Expenses (Dollars)')
+    plt.xticks(fontsize=8, rotation=45)
+    plt.tight_layout()
     plt.plot(x,y)   
 
     plt.savefig(img2, format='png')
@@ -374,8 +377,8 @@ def generate_data():
     budgetCategories['Car Project'] = BudgetCategory("Car Project", "{:.2f}".format(30000.00), '#aa0000')
     budgetCategories['Italy Trip'] = BudgetCategory("Italy Trip", "{:.2f}".format(5000.00), '#0000aa')
     for name,category in budgetCategories.items():
-        for i in range(100):
-            newDate = datetime.now
+        for i in range(20):
+            newDate = datetime.today() + relativedelta(days=i*random.randrange(1,2))
             formData = Payment(name, False, "random payment", "{:.2f}".format(random.random()*i) , newDate, RenewalType["None"])
             category.items.append(formData)
 
@@ -391,6 +394,10 @@ def generate_data():
             
             cur.execute('INSERT INTO payment(user_id, name, cost, category_name, type_of_payment, due_date)'
             'VALUES(%s, %s, %s, %s, %s, %s)',[CURRENT_GLOBAL_USER_ID, formData.name, formData.cost, formData.category,"One-time payment", formData.date])    
+
+            conn.commit()
+        cur.close()
+        conn.close()
     
 
 # main driver function
