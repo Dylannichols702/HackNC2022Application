@@ -74,7 +74,6 @@ class LoginInfo:
         self.password = password
 
 # Defines enum value for renewal types
-# PaymentCategory = Enum("PaymentCategory",["Entertainment", "Bill", "Something Else"])
 RenewalType = Enum("RenewalType",["Monthly", "Yearly", "None"])
 
 # Locally stored versions of every bill
@@ -83,8 +82,8 @@ dataset = {}
 
 # Populate the list of budget categories
 budgetCategories = {
-    "Entertainment":BudgetCategory("Entertainment",0,{},'#000000'),
-    "Bills":BudgetCategory("Bills",0,{},'#000000')
+    "Entertainment":BudgetCategory("Entertainment",0,[],'#000000'),
+    "Bills":BudgetCategory("Bills",0,[],'#000000')
     }
 
 # Locally stored spending metrics
@@ -157,7 +156,7 @@ def login():
 # Home Page route
 @app.route('/home', methods =["GET", "POST"])
 def index():
-    return render_template('index.html', data=dataset)
+    return render_template('index.html', data=budgetCategories)
 
 # New Payment Form Page route
 @app.route('/paymentform', methods=["GET","POST"])
@@ -196,11 +195,8 @@ def payment_form():
         conn.commit()
         cur.close()
         conn.close()
-        
-        if type in dataset:
-            dataset[type].append(formData)
-        else:
-            dataset[type] = [formData]
+
+        budgetCategories[type].items.append(formData)
         return index()
 
     return render_template('addpayment.html', budgetCategories=budgetCategories)
@@ -236,10 +232,7 @@ def subscription_form():
         cur.close()
         conn.close()
         
-        if type in dataset:
-            dataset[type].append(formData)
-        else:
-            dataset[type] = [formData]
+        budgetCategories[type].items.append(formData)
         return index()
 
     return render_template('addsubscription.html', budgetCategories=budgetCategories, renewalTypes=RenewalType)

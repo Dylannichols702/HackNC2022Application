@@ -20,18 +20,26 @@
     <h1>{{dataset}}</h1>
 
     
-    <div id="tablecontainer">
+    <div id="categoriescontainer">
         {% for categoryName,category in data.items() %}
+        <div class="tablecontainer">
             <table>
                 <caption>{{ categoryName }}</caption>
-                {% for payment in category.items %}
                 <tr>
-                    <td>{{payment.name}}</td>
-                    <td>{{payment.cost}}</td>
-                </tr>  
-                {% endfor %}
-
+                    <td>Total Budget</td>
+                    <td>${{category.budget}}</td>
+                </tr> 
+                <tr>
+                    <td>Budget Remaining</td>
+                    <td>${{category.budgetremaining}}</td>
+                </tr> 
+                <tr>
+                    <td>Percent Budget Remainig</td>
+                    <td>{{category.budgetpercent}}%</td>
+                </tr> 
             </table>
+            <a href="/categorybreakdown/{{categoryName}}"><button class="budget_breakdown">View Category Breakdown</button></a>
+        </div>
         {% endfor %}
     </div>
     <a class="donut"></a>

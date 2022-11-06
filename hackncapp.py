@@ -37,6 +37,7 @@ def initialize_database():
 
 #CHANGE THIS!!!!!!!!!!!!!!!!!!!
 CURRENT_GLOBAL_USER_ID = 1
+import random
 
 # Flask constructor takes the name of
 # current module (__name__) as argument.
@@ -61,11 +62,16 @@ class Payment:
 
 # Define Budget Category Class
 class BudgetCategory:
-    def __init__(self, name, budget, items, color):
+    def __init__(self, name, budget, color):
         self.name = name
         self.budget = budget
-        self.items = items
+        self.items = []
         self.color = color
+        self.budgetremaining = budget
+        self.budgetpercent = 100
+        self.avgexpenses = 0
+        self.overallbudgetpercent = 0
+
 
 # Define Login Info Class
 class LoginInfo:
@@ -82,8 +88,8 @@ dataset = {}
 
 # Populate the list of budget categories
 budgetCategories = {
-    "Entertainment":BudgetCategory("Entertainment",0,[],'#000000'),
-    "Bills":BudgetCategory("Bills",0,[],'#000000')
+    "Entertainment":BudgetCategory("Entertainment",0,'#000000'),
+    "Bills":BudgetCategory("Bills",0,'#000000')
     }
 
 # Locally stored spending metrics
@@ -105,10 +111,8 @@ def create_savings_goal():
     if request.method == "POST":
         date = datetime.strptime(request.form.get("deadline"), "%Y-%m-%d")
         newSavingsGoal = SavingsGoal(request.form.get("goalname"),
-            request.form.get("goal"), 
-            datetime(int(request.form.get("year")),
-            int(request.form.get("month")),
-            int(request.form.get("day"))))
+        "{:.2f}".format(float(request.form.get('goal'))), 
+            date)
 
         stringDate = str(newSavingsGoal.deadline.year)+"-"+str(newSavingsGoal.deadline.month)+"-"+str(newSavingsGoal.deadline.day)
         # place it in side the database!!!!!!!!!!!!!
@@ -119,11 +123,10 @@ def create_savings_goal():
         password='password')
         cur = conn.cursor()
         cur.execute('INSERT INTO saving_goals(name,amount,dead_line,user_id)'
-        'VALUES(%s,%s,%s,%s)', (newSavingsGoal.name,newSavingsGoal.goal,stringDate,CURRENT_GLOBAL_USER_ID))
+        'VALUES(%s,%s,%s,%s)', (newSavingsGoal.name,newSavingsGoal.goal,date,CURRENT_GLOBAL_USER_ID))
         conn.commit()
         cur.close()
         conn.close()
-
         # Put database writing stuff here :)
         return index()
     return render_template('addsavingsgoal.html')
@@ -150,7 +153,8 @@ def login():
         cur.close()
         conn.close()
         
-        return index()
+        generate_data()
+        return render_template('index.html', user=newLoginInfo.username, data=budgetCategories)
     return render_template('login.html')
 
 # Home Page route
@@ -166,7 +170,7 @@ def payment_form():
         formData = Payment(type,
             False,
             request.form.get('pname'),
-            request.form.get('cost'),
+            "{:.2f}".format(float(request.form.get('cost'))),
             request.form.get('date'),
             RenewalType["None"])
                 # place it in side the database!!!!!!!!!!!!!
@@ -209,9 +213,9 @@ def subscription_form():
         formData = Payment(type, 
             True,
             request.form.get('pname'),
-            request.form.get('cost'),
+            "{:.2f}".format(float(request.form.get('cost'))),
             request.form.get('date'),
-            request.form.get('stype'))
+            RenewalType[request.form.get('stype')])
 
         # SQL code
         conn = psycopg2.connect(
@@ -245,13 +249,26 @@ def add_budget_category():
         newBudgetCategory = BudgetCategory(
             categoryName,
             request.form.get("budget"),
-            {},
             request.form.get("color")
         )
         if not categoryName in budgetCategories:
             budgetCategories[categoryName]=newBudgetCategory
         return index()
     return render_template('addbudgetcategory.html')
+
+# Category Breakdown Page Route
+@app.route('/categorybreakdown/<name>', methods=["GET","POST"])
+def category_breakdown(name):
+    return render_template('categorybreakdown.html', budgetCategory=budgetCategories[name])
+
+def generate_data():
+    budgetCategories['Car Project'] = BudgetCategory("Car Project", "{:.2f}".format(30000.00), '#aa0000')
+    budgetCategories['Italy Trip'] = BudgetCategory("Italy Trip", "{:.2f}".format(5000.00), '#0000aa')
+    for name,category in budgetCategories.items():
+        for i in range(100):
+            newDate = datetime.now
+            newData = Payment(name, False, "random payment", "{:.2f}".format(random.random()*i) , newDate, RenewalType["None"])
+            category.items.append(newData)
 
 # main driver function
 if __name__ == '__main__':
