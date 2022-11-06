@@ -163,8 +163,13 @@ def create_savings_goal():
         return index()
     return render_template('addsavingsgoal.html')
 
-# Login page route
+# Entering page
 @app.route('/', methods=["GET","POST"])
+def enter():
+    return render_template('entering_page.html')  
+
+# Login page route
+@app.route('/login', methods=["GET","POST"])
 def login():
     clearEverything()
     initialize_database()
@@ -256,6 +261,7 @@ def payment_form():
         return index()
 
     return render_template('addpayment.html', budgetCategories=budgetCategories)
+
 
 # New Subscription Form Page Route
 @app.route('/subscriptionform', methods=["GET","POST"])
@@ -478,6 +484,7 @@ def generate_data():
 
 # main driver function
 if __name__ == '__main__':
+    
  
     # run() method of Flask class runs the application
     # on the local development server.
