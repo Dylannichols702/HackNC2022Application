@@ -126,7 +126,7 @@ savingsGoals = {}
 
 # Locally stored spending metrics
 # TODO: Query database to populate this info when the app is open
-budget = 50000.0
+budget = 500000
 currentMonthSpending = 0.0
     
 
@@ -195,7 +195,8 @@ def login():
         conn.close()
         
         generate_data()
-        currentMonthSpending = calc_monthly_spending()
+        currentMonthSpending = calc_monthly_spending()[0]
+        budget = calc_monthly_spending()[1]
 
         return render_template('index.html', 
             user=newLoginInfo.username, 
@@ -210,7 +211,8 @@ def login():
 # Home Page route
 @app.route('/home', methods =["GET", "POST"])
 def index():
-    currentMonthSpending = calc_monthly_spending()
+    currentMonthSpending = calc_monthly_spending()[0]
+    budget = calc_monthly_spending()[1]
     return render_template('index.html', 
         data=budgetCategories, 
         savingsGoals=savingsGoals,
@@ -279,8 +281,6 @@ def subscription_form():
                 date,
                 renewalType)
 
-            budgetCategories[type].items.append(formData)
-
             # SQL code
             conn = psycopg2.connect(
             host="localhost",
@@ -320,8 +320,7 @@ def subscription_form():
                 date = date + relativedelta(weeks=1)
             else:
                 break
-            
-        budgetCategories[type].items.append(formData)
+        
         calc_budgetvalues(budgetCategories[type])
 
         return index()
@@ -341,7 +340,23 @@ def add_budget_category():
         )
         if not categoryName in budgetCategories:
             budgetCategories[categoryName]=newBudgetCategory
+
+            conn = psycopg2.connect(
+            host="localhost",
+            database="flask_db",
+            user='mmaggiore',
+            password='password')
+            cur = conn.cursor()
+
+            cur.execute('INSERT INTO category(name)'
+            'VALUES(%s) ON CONFLICT DO NOTHING;', [categoryName]) 
+
+            conn.commit()
+            cur.close()
+            conn.close()
+        calc_budgetvalues(budgetCategories[categoryName])
         return index()
+    
     return render_template('addbudgetcategory.html')
  
 # Category Breakdown Page Route
@@ -357,7 +372,7 @@ def category_breakdown(name):
         password='password')
     cur = conn.cursor()
 
-    cur.execute('SELECT due_date, sum(cost) FROM payment WHERE due_date > now() - INTERVAL \'30 days\' GROUP BY due_date ORDER BY due_date;')
+    cur.execute(f'SELECT due_date, sum(cost) FROM payment WHERE due_date > now() - INTERVAL \'30 days\' AND category_name = \'{name}\' GROUP BY due_date ORDER BY due_date;')
     last30payment = cur.fetchall()
     
     dataMap = dict()
@@ -442,9 +457,11 @@ def calc_budgetvalues(budgetCategory):
 
 def calc_monthly_spending():
     ans = 0
+    ans2 = 0
     for category in budgetCategories:
         ans += (float(budgetCategories[category].budget) - float(budgetCategories[category].budgetremaining))
-    return ans
+        ans2 += float(budgetCategories[category].budget)
+    return [ans, ans2]
     
  
 def generate_data():
@@ -479,7 +496,7 @@ def generate_data():
         cur.close()
         conn.close()
 
-        calc_monthly_spending()
+        currentMonthSpending = calc_monthly_spending()
         calc_budgetvalues(budgetCategories[name])
 
 # main driver function
