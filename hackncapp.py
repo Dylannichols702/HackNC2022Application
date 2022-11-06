@@ -141,6 +141,11 @@ def add_budget_category():
         return index()
     return render_template('addbudgetcategory.html')
 
+# Category Breakdown Page Route
+@app.route('/categorybreakdown/<name>', methods=["GET","POST"])
+def category_breakdown(name):
+    return render_template('categorybreakdown.html', budgetCategory=budgetCategories[name])
+
 # main driver function
 if __name__ == '__main__':
  
