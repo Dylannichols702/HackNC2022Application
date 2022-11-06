@@ -179,7 +179,7 @@ def add_budget_category():
             budgetCategories[categoryName]=newBudgetCategory
         return index()
     return render_template('addbudgetcategory.html')
-
+ 
 # Category Breakdown Page Route
 @app.route('/categorybreakdown/<name>', methods=["GET","POST"])
 def category_breakdown(name):
