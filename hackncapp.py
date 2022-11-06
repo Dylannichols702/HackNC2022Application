@@ -252,7 +252,7 @@ def subscription_form():
         # conn.commit()
         # cur.close()
         # conn.close()
-        # return index()
+        return index()
 
     return render_template('addsubscription.html', budgetCategories=budgetCategories, renewalTypes=RenewalType)
 
