@@ -172,7 +172,6 @@ def login():
     if request.method == 'POST':
         newLoginInfo = LoginInfo(request.form.get("username"), 
             request.form.get("password"))
-        currentMonthSpending = calc_monthly_spending()
 
         # place it in side the database!!!!!!!!!!!!!
         conn = psycopg2.connect(
@@ -191,6 +190,7 @@ def login():
         conn.close()
         
         generate_data()
+        currentMonthSpending = calc_monthly_spending()
 
         return render_template('index.html', 
             user=newLoginInfo.username, 
@@ -344,21 +344,66 @@ def category_breakdown(name):
     # Calculate Remaining Budget
     img = BytesIO()
 
-    y = []
+    conn = psycopg2.connect(
+        host="localhost",
+        database="flask_db",
+        user='mmaggiore',
+        password='password')
+    cur = conn.cursor()
+
+    cur.execute('SELECT due_date, sum(cost) FROM payment WHERE due_date > now() - INTERVAL \'30 days\' GROUP BY due_date ORDER BY due_date;')
+    last30payment = cur.fetchall()
+    
+    dataMap = dict()
+    for i in last30payment:
+        dataMap[i[0]] = i[1]
+    print(dataMap)
+
     x = []
+    y = []
 
-    for payment in budgetCategories["Car Project"].items:
-        y.append(payment.cost)
-        x.append(payment.date)
+    for date,cost in dataMap.items():
+        y.append(cost)
+        x.append(f'{date.month}-{date.day}')
 
+    plt.title("Daily Expenses in Last 10 Days")
+    plt.xlabel('Date (Month-Day)')
+    plt.ylabel('Daily Expenses (Dollars)')
+    plt.xticks(fontsize=8, rotation=45)
+    plt.tight_layout()
     plt.plot(x,y)   
 
     plt.savefig(img, format='png')
     plt.close()
     img.seek(0)
-    plot_url = base64.b64encode(img.getvalue()).decode('utf8')
-    
-    #<img src="data:image/png;base64, {{ plot_url }}">
+    plot_url = [base64.b64encode(img.getvalue()).decode('utf8')]
+
+    img2 = BytesIO()
+
+    x = []
+    y = []
+
+    for i,date in enumerate(dataMap):
+        cost = dataMap[date]
+        if i == 0:
+            y.append(cost)
+            x.append(f'{date.month}-{date.day}')
+            continue
+        y.append(cost + y[i-1])
+        x.append(f'{date.month}-{date.day}')
+
+    plt.title("Cumulative Expenses in Last 30 Days")
+    plt.xlabel('Date (Month-Day)')
+    plt.ylabel('Total Expenses (Dollars)')
+    plt.xticks(fontsize=8, rotation=45)
+    plt.tight_layout()
+    plt.plot(x,y)   
+
+    plt.savefig(img2, format='png')
+    plt.close()
+    img2.seek(0)
+
+    plot_url.append(base64.b64encode(img2.getvalue()).decode('utf8'))
 
     return render_template('categorybreakdown.html', budgetCategory=budgetCategories[name], plot_url=plot_url)
 
@@ -402,7 +447,13 @@ def generate_data():
     for name,category in budgetCategories.items():
         for i in range(20):
             newDate = datetime.today() + relativedelta(days=i*random.randrange(1,2))
-            formData = Payment(name, False, "random payment", "{:.2f}".format(random.random()*i) , newDate, RenewalType["None"])
+            formData = Payment(name, 
+                False, 
+                "random payment", 
+                "{:.2f}".format(random.random()*i), 
+                newDate, 
+                random.choice([RenewalType["None"],RenewalType["Monthly"],RenewalType["Weekly"],RenewalType["Yearly"]]))
+            
             category.items.append(formData)
 
             conn = psycopg2.connect(
