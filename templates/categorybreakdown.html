@@ -15,6 +15,14 @@
             <th>Subscription Type</th>
             <th>Price</th>
         </tr>
+        {% for item in budgetCategory.items %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.renewal_type.name }}</td>
+            <td>${{ item.cost }}</td>
+        </tr>
+        {% endfor %}
     </table>
+    <a href="/home"><button>Back</button></a>
 </body>
 </html>

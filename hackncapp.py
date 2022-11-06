@@ -76,7 +76,7 @@ def create_savings_goal():
     if request.method == "POST":
         date = datetime.strptime(request.form.get("deadline"), "%Y-%m-%d")
         newSavingsGoal = SavingsGoal(request.form.get("goalname"),
-            request.form.get("goal"), 
+            "{:.2f}".format(float(request.form.get('cost'))), 
             date)
         # Put database writing stuff here :)
         return index()
@@ -104,7 +104,7 @@ def payment_form():
         formData = Payment(type,
             False,
             request.form.get('pname'),
-            request.form.get('cost'),
+            "{:.2f}".format(float(request.form.get('cost'))),
             request.form.get('date'),
             RenewalType["None"])
 
@@ -121,9 +121,9 @@ def subscription_form():
         formData = Payment(type, 
             True,
             request.form.get('pname'),
-            request.form.get('cost'),
+            "{:.2f}".format(float(request.form.get('cost'))),
             request.form.get('date'),
-            request.form.get('stype'))
+            RenewalType[request.form.get('stype')])
         
         budgetCategories[type].items.append(formData)
         return index()
@@ -138,7 +138,7 @@ def add_budget_category():
         newBudgetCategory = BudgetCategory(
             categoryName,
             request.form.get("budget"),
-            {},
+            [],
             request.form.get("color")
         )
         if not categoryName in budgetCategories:
