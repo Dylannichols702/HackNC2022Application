@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Add Budget Category</title>
+</head>
+<body>
+    <h1>Add Budget Category</h1>
+
+    <form action="{{url_for('add_budget_category')}}", method="post">
+        <label for="catname">Category Name: </label>
+        <input id="catname" name="catname" type="text" required><br>
+        <label for="budget">Budget: $</label>
+        <input type="number" name="budget" id="budget" required><br>
+        <label for="color">Color: </label>
+        <input type="color" name="color" id="color"><br>
+        <input type="submit" value="Create Category">
+    </form>
+    <a href="/home"><button>Back</button></a>
+</body>
+</html>
