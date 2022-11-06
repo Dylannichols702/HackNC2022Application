@@ -23,7 +23,7 @@
         {% for categoryName,category in data.items() %}
             <table>
                 <caption>{{ categoryName }}</caption>
-                {% for payment in category[items] %}
+                {% for payment in category.items %}
                 <tr>
                     <td>{{payment.name}}</td>
                     <td>{{payment.cost}}</td>
