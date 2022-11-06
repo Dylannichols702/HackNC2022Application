@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <title>Subscription Addition</title>
+
+    <script>
+        
+    </script>
 </head>
 
 <body>
@@ -17,7 +21,7 @@
         <br>
 
         <label for="date">Start Date:</label>
-        <input type="date" id="date" name="date" required>
+        <input type="date" id="date" name="date" max="{{ today }}" required />
         <br>
 
         <label for="ptype">Budget Category:</label>
