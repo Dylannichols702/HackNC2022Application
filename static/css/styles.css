@@ -41,13 +41,36 @@ button, input[type=submit]{
   margin: 10px;
 }
 
-input[type=text], input[type=date]{
+input[type=text], 
+  input[type=date], 
+  input[type=password],
+  input[type=color]{
   margin-top: 25px;
   margin-bottom: 25px;
 }
 
 select{
-  background-color: rgb(255, 255, 255);
+  background-color: #ffffff;
   margin-top: 25px;
   margin-bottom: 25px;
+}
+
+.pie {
+  --w: 150px;
+  width: var(--w);
+  aspect-ratio: 1;
+  display: inline-grid;
+  place-content: center;
+  margin: 5px;
+  font-size: 25px;
+  font-weight: bold;
+  font-family: sans-serif;
+}
+
+.pie:before{
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  inset: 0;
+  background: conic-gradient(var(--c) calc(var(--p)*1%),#0000 0);
 }

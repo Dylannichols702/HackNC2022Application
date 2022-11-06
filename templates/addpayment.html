@@ -22,8 +22,8 @@
 
         <label for="ptype">Payment Type:</label>
         <select name="ptype" class="Input" required>
-            {% for o in data %}
-            <option value="{{ o.name }}">{{ o.name }}</option>
+            {% for name,category in budgetCategories.items() %}
+            <option value="{{ name }}">{{ name }}</option>
             {% endfor %}
         </select>
         <br>
