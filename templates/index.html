@@ -17,22 +17,20 @@
 
     <h1>{{dataset}}</h1>
 
-    <div>
-        {% for paytype,payments in data.items() %}
-
-        <h3 class="tabletitle">{{ paytype }}</h3>
-        <table>
-
-            {% for payment in payments %}
-            <tr>
-                <td>{{payment.name}}</td>
-                <td>{{payment.cost}}</td>
-            </tr>  
-            {% endfor %}
-
-        </table>
-    </div>
     
-    {% endfor %}
+    <div id="tablecontainer">
+        {% for paytype,payments in data.items() %}
+            <table>
+                <caption>{{ paytype }}</caption>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{payment.name}}</td>
+                    <td>{{payment.cost}}</td>
+                </tr>  
+                {% endfor %}
+
+            </table>
+        {% endfor %}
+    </div>
 </body>
 </html>

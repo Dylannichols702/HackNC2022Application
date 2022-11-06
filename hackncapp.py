@@ -9,7 +9,7 @@ from enum import Enum
 app = Flask(__name__)
 
 PaymentCategory = Enum("PaymentCategory",["Entertainment", "Bill", "Something Else"])
-RenewalType = Enum("RenewalType",["Monthly", "Yearly", "None"])
+RenewalType = Enum("RenewalType",["Monthly", "Yearly", "Weekly", "None"])
 
 dataset = {}
 
