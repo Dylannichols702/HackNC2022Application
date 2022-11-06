@@ -8,11 +8,6 @@ from enum import Enum
 # current module (__name__) as argument.
 app = Flask(__name__)
 
-PaymentCategory = Enum("PaymentCategory",["Entertainment", "Bill", "Something Else"])
-RenewalType = Enum("RenewalType",["Monthly", "Yearly", "None"])
-
-dataset = {}
-
 # Define Savings Goal class
 class SavingsGoal:
     def __init__(self, name, goal, deadline):
@@ -30,10 +25,40 @@ class Payment:
         self.date = date
         self.renewal_type = renewal_type
 
+# Define Budget Category Class
+class BudgetCategory:
+    def __init__(self, name, budget, items, color):
+        self.name = name
+        self.budget = budget
+        self.items = items
+        self.color = color
+
+# Define Login Info Class
 class LoginInfo:
     def __init__(self, username, password):
         self.username = username
         self.password = password
+
+# Defines enum value for renewal types
+# PaymentCategory = Enum("PaymentCategory",["Entertainment", "Bill", "Something Else"])
+RenewalType = Enum("RenewalType",["Monthly", "Yearly", "None"])
+
+# Locally stored versions of every bill
+# TODO: Query database to populate this dataset when the app is loaded.
+dataset = {}
+
+# Populate the list of budget categories
+budgetCategories = {
+    "Entertainment":BudgetCategory("Entertainment",0,{},'#000000'),
+    "Bills":BudgetCategory("Bills",0,{},'#000000')
+    }
+
+# Locally stored spending metrics
+# TODO: Query database to populate this info when the app is open
+budget = 0
+currentMonthSpending = 0
+currentMonthSubscriptionSpending = 0
+currentMonthOneTimeSpending = 0
 
 # Flask constructor takes the name of
 # current module (__name__) as argument.
@@ -85,7 +110,7 @@ def payment_form():
             dataset[type] = [formData]
         return index()
 
-    return render_template('addpayment.html', data=PaymentCategory)
+    return render_template('addpayment.html', budgetCategories=budgetCategories)
 
 # New Subscription Form Page Route
 @app.route('/subscriptionform', methods=["GET","POST"])
@@ -105,7 +130,23 @@ def subscription_form():
             dataset[type] = [formData]
         return index()
 
-    return render_template('addsubscription.html', paymentTypes=PaymentCategory, renewalTypes=RenewalType)
+    return render_template('addsubscription.html', budgetCategories=budgetCategories, renewalTypes=RenewalType)
+
+# New Budget Category Page Route
+@app.route('/addbudgetcategory', methods=["GET","POST"])
+def add_budget_category():
+    if request.method == "POST":
+        categoryName = request.form.get("catname")
+        newBudgetCategory = BudgetCategory(
+            categoryName,
+            request.form.get("budget"),
+            {},
+            request.form.get("color")
+        )
+        if not categoryName in budgetCategories:
+            budgetCategories[categoryName]=newBudgetCategory
+        return index()
+    return render_template('addbudgetcategory.html')
 
 # main driver function
 if __name__ == '__main__':

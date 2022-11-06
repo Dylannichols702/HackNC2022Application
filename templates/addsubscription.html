@@ -16,14 +16,10 @@
         <input type="text" id="pname" name="pname" required>
         <br>
 
-        <label for="date">Subcription Date:</label>
-        <input type="date" id="date" name="date" required>
-        <br>
-
         <label for="ptype">Payment Type:</label>
         <select name="ptype" class="Input" required>
-            {% for o in paymentTypes %}
-            <option value="{{ o.name }}">{{ o.name }}</option>
+            {% for name in budgetCategories %}
+            <option value="{{ name }}">{{ name }}</option>
             {% endfor %}
         </select>
         <br>
@@ -37,7 +33,7 @@
         <br>
 
         <label for="cost">Cost:</label>
-        <input type="number" id="cost" name="cost" min="0" required>
+        <input type="text" id="cost" name="cost" required>
         <br><br>
 
         <input type="submit" value="Submit">
