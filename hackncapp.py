@@ -11,6 +11,9 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 from dateutil.relativedelta import relativedelta
 
 # Create local database in the beginning
@@ -65,6 +68,8 @@ def clearEverything():
 #CHANGE THIS!!!!!!!!!!!!!!!!!!!
 CURRENT_GLOBAL_USER_ID = 1
 import random
+from io import BytesIO
+import base64
 
 # Flask constructor takes the name of
 # current module (__name__) as argument.
@@ -332,73 +337,28 @@ def add_budget_category():
             budgetCategories[categoryName]=newBudgetCategory
         return index()
     return render_template('addbudgetcategory.html')
-
+ 
 # Category Breakdown Page Route
 @app.route('/categorybreakdown/<name>', methods=["GET","POST"])
 def category_breakdown(name):
     # Calculate Remaining Budget
     img = BytesIO()
 
-    conn = psycopg2.connect(
-        host="localhost",
-        database="flask_db",
-        user='mmaggiore',
-        password='password')
-    cur = conn.cursor()
-
-    cur.execute('SELECT due_date, sum(cost) FROM payment WHERE due_date > now() - INTERVAL \'30 days\' GROUP BY due_date ORDER BY due_date;')
-    last30payment = cur.fetchall()
-    
-    dataMap = dict()
-    for i in last30payment:
-        dataMap[i[0]] = i[1]
-    print(dataMap)
-
-    x = []
     y = []
+    x = []
 
-    for date,cost in dataMap.items():
-        y.append(cost)
-        x.append(f'{date.month}-{date.day}')
+    for payment in budgetCategories["Car Project"].items:
+        y.append(payment.cost)
+        x.append(payment.date)
 
-    plt.title("Daily Expenses in Last 10 Days")
-    plt.xlabel('Date (Month-Day)')
-    plt.ylabel('Daily Expenses (Dollars)')
-    plt.xticks(fontsize=8, rotation=45)
-    plt.tight_layout()
     plt.plot(x,y)   
 
     plt.savefig(img, format='png')
     plt.close()
     img.seek(0)
-    plot_url = [base64.b64encode(img.getvalue()).decode('utf8')]
-
-    img2 = BytesIO()
-
-    x = []
-    y = []
-
-    for i,date in enumerate(dataMap):
-        cost = dataMap[date]
-        if i == 0:
-            y.append(cost)
-            x.append(f'{date.month}-{date.day}')
-            continue
-        y.append(cost + y[i-1])
-        x.append(f'{date.month}-{date.day}')
-
-    plt.title("Cumulative Expenses in Last 30 Days")
-    plt.xlabel('Date (Month-Day)')
-    plt.ylabel('Total Expenses (Dollars)')
-    plt.xticks(fontsize=8, rotation=45)
-    plt.tight_layout()
-    plt.plot(x,y)   
-
-    plt.savefig(img2, format='png')
-    plt.close()
-    img2.seek(0)
-
-    plot_url.append(base64.b64encode(img2.getvalue()).decode('utf8'))
+    plot_url = base64.b64encode(img.getvalue()).decode('utf8')
+    
+    #<img src="data:image/png;base64, {{ plot_url }}">
 
     return render_template('categorybreakdown.html', budgetCategory=budgetCategories[name], plot_url=plot_url)
 
@@ -434,8 +394,8 @@ def calc_monthly_spending():
     for category in budgetCategories:
         ans += (float(budgetCategories[category].budget) - float(budgetCategories[category].budgetremaining))
     return ans
-
-
+    
+ 
 def generate_data():
     budgetCategories['Car Project'] = BudgetCategory("Car Project", "{:.2f}".format(30000.00), '#aa0000')
     budgetCategories['Italy Trip'] = BudgetCategory("Italy Trip", "{:.2f}".format(5000.00), '#0000aa')
@@ -464,7 +424,6 @@ def generate_data():
 
         calc_monthly_spending()
         calc_budgetvalues(budgetCategories[name])
-    
 
 # main driver function
 if __name__ == '__main__':
