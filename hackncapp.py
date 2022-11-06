@@ -2,7 +2,9 @@
 # An object of Flask class is our WSGI application.
 from flask import Flask, render_template, request
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from enum import Enum
+import pandas as pd
 import random
 
 # Flask constructor takes the name of
@@ -74,7 +76,7 @@ def create_savings_goal():
     if request.method == "POST":
         date = datetime.strptime(request.form.get("deadline"), "%Y-%m-%d")
         newSavingsGoal = SavingsGoal(request.form.get("goalname"),
-            "{:.2f}".format(float(request.form.get('cost'))), 
+            "{:.2f}".format(float(request.form.get('goal'))), 
             date)
         # Put database writing stuff here :)
         return index()
@@ -119,16 +121,31 @@ def payment_form():
 def subscription_form():
     if request.method == 'POST':
         type = request.form.get('ptype')
-        formData = Payment(type, 
-            True,
-            request.form.get('pname'),
-            "{:.2f}".format(float(request.form.get('cost'))),
-            request.form.get('date'),
-            RenewalType[request.form.get('stype')])
-        
+        date = datetime.strptime(request.form.get('date'), '%Y-%m-%d')
+        renewalType = RenewalType[request.form.get('stype')]
+
+        while(date < datetime.now()):
+            formData = Payment(type, 
+                True,
+                request.form.get('pname'),
+                "{:.2f}".format(float(request.form.get('cost'))),
+                date,
+                renewalType)
+
+            budgetCategories[type].items.append(formData)
+
+            if renewalType == RenewalType['Monthly']:
+                date = date + relativedelta(months=1)
+            elif renewalType == RenewalType['Yearly']:
+                date = date + relativedelta(years=1)
+            elif renewalType == RenewalType['Weekly']:
+                date = date + relativedelta(weeks=1)
+            else:
+                break
+            
         budgetCategories[type].items.append(formData)
         calc_budgetvalues(budgetCategories[type])
-        
+
         return index()
 
     return render_template('addsubscription.html', budgetCategories=budgetCategories, renewalTypes=RenewalType)
@@ -175,6 +192,16 @@ def generate_data():
             newDate = datetime.now
             newData = Payment(name, False, "random payment", "{:.2f}".format(random.random()*i) , newDate, RenewalType["None"])
             category.items.append(newData)
+        
+        for i in range(50):
+            newDate = datetime.now
+            newData = Payment(name, 
+                False, "random subscription", 
+                "{:.2f}".format(random.random()*i), 
+                newDate, 
+                random.choice([RenewalType["Monthly"], RenewalType["Yearly"]]))
+            category.items.append(newData)
+    
         calc_budgetvalues(budgetCategories[name])
 
 # main driver function
