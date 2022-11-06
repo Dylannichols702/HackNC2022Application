@@ -32,6 +32,11 @@ class BudgetCategory:
         self.budget = budget
         self.items = items
         self.color = color
+        self.budgetremaining = budget
+        self.budgetpercent = 100
+        self.avgexpenses = 0
+        self.overallbudgetpercent = 0
+
 
 # Define Login Info Class
 class LoginInfo:
