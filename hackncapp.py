@@ -58,14 +58,13 @@ dataset = {}
 budgetCategories = {}
 
 # Populate the list of savings goals
-savingsGoals = []
+savingsGoals = {}
 
 # Locally stored spending metrics
 # TODO: Query database to populate this info when the app is open
-budget = 0
-currentMonthSpending = 0
-currentMonthSubscriptionSpending = 0
-currentMonthOneTimeSpending = 0
+budget = 50000.0
+currentMonthSpending = 0.0
+    
 
 # Flask constructor takes the name of
 # current module (__name__) as argument.
@@ -82,7 +81,7 @@ def create_savings_goal():
             "{:.2f}".format(float(request.form.get('goal'))), 
             date)
         # Put database writing stuff here :)
-        savingsGoals.append(newSavingsGoal)
+        savingsGoals[newSavingsGoal.name]=newSavingsGoal
         return index()
     return render_template('addsavingsgoal.html')
 
@@ -93,18 +92,24 @@ def login():
         newLoginInfo = LoginInfo(request.form.get("username"), 
             request.form.get("password"))
         generate_data()
+        currentMonthSpending = calc_monthly_spending()
         return render_template('index.html', 
             user=newLoginInfo.username, 
             data=budgetCategories, 
-            savingsGoals=savingsGoals)
+            savingsGoals=savingsGoals,
+            budget="{:.2f}".format(budget),
+            currentMonthSpending="{:.2f}".format(currentMonthSpending))
     return render_template('login.html')
 
 # Home Page route
 @app.route('/home', methods =["GET", "POST"])
 def index():
+    currentMonthSpending = calc_monthly_spending()
     return render_template('index.html', 
         data=budgetCategories, 
-        savingsGoals=savingsGoals)
+        savingsGoals=savingsGoals,
+        budget="{:.2f}".format(budget),
+        currentMonthSpending="{:.2f}".format(currentMonthSpending))
 
 # New Payment Form Page route
 @app.route('/paymentform', methods=["GET","POST"])
@@ -120,7 +125,7 @@ def payment_form():
 
         budgetCategories[type].items.append(formData)
         calc_budgetvalues(budgetCategories[type])
-        
+
         return index()
 
     return render_template('addpayment.html', budgetCategories=budgetCategories)
@@ -178,7 +183,6 @@ def add_budget_category():
 # Category Breakdown Page Route
 @app.route('/categorybreakdown/<name>', methods=["GET","POST"])
 def category_breakdown(name):
-    # Calculate Remaining Budget
     return render_template('categorybreakdown.html', budgetCategory=budgetCategories[name])
 
 def calc_budgetvalues(budgetCategory):
@@ -188,11 +192,19 @@ def calc_budgetvalues(budgetCategory):
     # Calculate Remaining Budget
     for item in budgetCategory.items:
         budgetremaining -= float(item.cost)
+
     budgetCategory.budgetremaining = str("{:.2f}".format(budgetremaining))
 
     # Calculate Remaining Budget Percentage
     budgetpercent = (budgetremaining/float(budgetCategory.budget))*100
     budgetCategory.budgetpercent = str("{:.2f}".format(budgetpercent))
+
+def calc_monthly_spending():
+    ans = 0
+    for category in budgetCategories:
+        ans += (float(budgetCategories[category].budget) - float(budgetCategories[category].budgetremaining))
+    return ans
+
 
 def generate_data():
     budgetCategories['Car Project'] = BudgetCategory("Car Project", "{:.2f}".format(30000.00), '#aa0000')

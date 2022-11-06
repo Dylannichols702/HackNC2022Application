@@ -11,6 +11,9 @@
 <body>
     <h1>Welcome, {{user}}</h1>
 
+    <h2>Your budget this month is ${{ budget }}</h2>
+    <h2>So far you've spent ${{ currentMonthSpending }}</h2>
+
     <a href="/createsavingsgoal"><button>Create Savings Goal</button></a>
     <a href="/paymentform"><button>Add Payment</button></a>
     <a href="/subscriptionform"><button>Add Subscription</button></a>
@@ -43,7 +46,7 @@
     </div>
     <table>
         <caption>Savings Goals</caption>
-        {% for savingsGoal in savingsGoals %}
+        {% for name,savingsGoal in savingsGoals.items() %}
         <tr>
             <td>{{ savingsGoal.name }}</td>
             <td>${{ savingsGoal.goal }}</td>
