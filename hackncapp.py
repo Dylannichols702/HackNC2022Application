@@ -22,7 +22,7 @@ def initialize_database():
     cur.execute('DROP TABLE IF EXISTS budget CASCADE;')
     cur.execute('CREATE TABLE budget(user_id SERIAL,budget_id SERIAL PRIMARY KEY,overall_budget_limit double precision,budget_amount double precision,FOREIGN KEY (user_id) REFERENCES person(id));')
     cur.execute('DROP TABLE IF EXISTS category CASCADE;')
-    cur.execute('CREATE TABLE category(name TEXT PRIMARY KEY,budget_id SERIAL,FOREIGN KEY (budget_id) REFERENCES budget(budget_id));')  #
+    cur.execute('CREATE TABLE category(budget_id SERIAL, name TEXT PRIMARY KEY);')  #
     cur.execute('DROP TABLE IF EXISTS login CASCADE;')
     cur.execute('CREATE TABLE login(user_id SERIAL,password TEXT UNIQUE,user_name TEXT UNIQUE,FOREIGN KEY (user_id) REFERENCES person(id));')
     cur.execute('DROP TABLE IF EXISTS payment CASCADE;')
@@ -178,9 +178,12 @@ def payment_form():
         user='mmaggiore',
         password='password')
         cur = conn.cursor()
+
+        cur.execute('INSERT INTO category(name)'
+        'VALUES(%s);', [formData.category])
         
-        cur.execute('INSERT INTO payment(user_id,name, cost, type_of_payment, due_date)'
-        'VALUES(%s, %s, %s, %s, %s)',[CURRENT_GLOBAL_USER_ID, formData.name, formData.cost, "One-time payment", formData.date])# add dollar sign in front of number? figure out later.
+        cur.execute('INSERT INTO payment(user_id, name, cost, category_name, type_of_payment, due_date)'
+        'VALUES(%s, %s, %s, %s, %s, %s)',[CURRENT_GLOBAL_USER_ID, formData.name, formData.cost, formData.category,"One-time payment", formData.date])# add dollar sign in front of number? figure out later.
         
 #           File "c:\Users\lunat\OneDrive\Documents\HackNC-2022\hackncapp.py", line 157, in payment_form
 #           cur.execute('INSERT INTO payment(user_id,name, cost, category_name, type_of_payment)'
@@ -221,9 +224,12 @@ def subscription_form():
         user='mmaggiore',
         password='password')
         cur = conn.cursor()
+
+        cur.execute('INSERT INTO category(name)'
+        'VALUES(%s)',(formData.name))
         
-        cur.execute('INSERT INTO payment(user_id, name, cost, type_of_payment, subscription_type, due_date)'
-        'VALUES(%s, %s, %s, %s, %s, %s)',(CURRENT_GLOBAL_USER_ID, formData.name, formData.cost, "Recurring payment", formData.renewal_type, formData.date))
+        cur.execute('INSERT INTO payment(user_id, name, cost, category_name, type_of_payment, subscription_type, due_date)'
+        'VALUES(%s, %s, %s, %s, %s, %s, %s)',(CURRENT_GLOBAL_USER_ID, formData.name, formData.cost, formData.category,"Recurring payment", formData.renewal_type, formData.date))
         # cur.execute('INSERT INTO login(password,user_name)'
         # 'VALUES(%s,%s)',(newLoginInfo.password,newLoginInfo.username))
         conn.commit()
