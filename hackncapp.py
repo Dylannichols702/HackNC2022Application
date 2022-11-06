@@ -2,6 +2,7 @@
 # An object of Flask class is our WSGI application.
 from flask import Flask, render_template, request
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from enum import Enum
 import pandas as pd
 import random
@@ -120,14 +121,28 @@ def payment_form():
 def subscription_form():
     if request.method == 'POST':
         type = request.form.get('ptype')
-        formData = Payment(type, 
-            True,
-            request.form.get('pname'),
-            "{:.2f}".format(float(request.form.get('cost'))),
-            request.form.get('date'),
-            RenewalType[request.form.get('stype')])
-        
-        budgetCategories[type].items.append(formData)
+        date = datetime.strptime(request.form.get('date'), '%Y-%m-%d')
+        renewalType = RenewalType[request.form.get('stype')]
+
+        while(date < datetime.now()):
+            formData = Payment(type, 
+                True,
+                request.form.get('pname'),
+                "{:.2f}".format(float(request.form.get('cost'))),
+                date,
+                renewalType)
+
+            budgetCategories[type].items.append(formData)
+
+            if renewalType == RenewalType['Monthly']:
+                date = date + relativedelta(months=1)
+            elif renewalType == RenewalType['Yearly']:
+                date = date + relativedelta(years=1)
+            elif renewalType == RenewalType['Weekly']:
+                date = date + relativedelta(weeks=1)
+            else:
+                break
+
         return index()
 
     return render_template('addsubscription.html', budgetCategories=budgetCategories, renewalTypes=RenewalType)
