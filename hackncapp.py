@@ -159,6 +159,7 @@ def create_savings_goal():
 # Login page route
 @app.route('/', methods=["GET","POST"])
 def login():
+    initialize_database()
     if request.method == 'POST':
         newLoginInfo = LoginInfo(request.form.get("username"), 
             request.form.get("password"))   
@@ -361,5 +362,5 @@ if __name__ == '__main__':
  
     # run() method of Flask class runs the application
     # on the local development server.
-    initialize_database()
+    
     app.run()
