@@ -273,7 +273,39 @@ def add_budget_category():
 # Category Breakdown Page Route
 @app.route('/categorybreakdown/<name>', methods=["GET","POST"])
 def category_breakdown(name):
-    return render_template('categorybreakdown.html', budgetCategory=budgetCategories[name])
+    # Calculate Remaining Budget
+    img = BytesIO()
+
+    # y = []
+    # x = []
+
+    # for payment in budgetCategories["Car Project"].items:
+    #     y.append(payment.cost)
+    #     x.append(payment.date.month)
+
+    # plt.plot(x,y)   
+
+    plt.savefig(img, format='png')
+    plt.close()
+    img.seek(0)
+    plot_url = base64.b64encode(img.getvalue()).decode('utf8')
+    
+    #<img src="data:image/png;base64, {{ plot_url }}">
+
+    return render_template('categorybreakdown.html', budgetCategory=budgetCategories[name], plot_url=plot_url)
+
+def calc_budgetvalues(budgetCategory):
+    budgetCategory.budgetremaining = budgetCategory.budget
+    budgetremaining = float(budgetCategory.budgetremaining)
+
+    # Calculate Remaining Budget
+    for item in budgetCategory.items:
+        budgetremaining -= float(item.cost)
+    budgetCategory.budgetremaining = str("{:.2f}".format(budgetremaining))
+
+    # Calculate Remaining Budget Percentage
+    budgetpercent = (budgetremaining/float(budgetCategory.budget))*100
+    budgetCategory.budgetpercent = str("{:.2f}".format(budgetpercent))
 
 def generate_data():
     budgetCategories['Car Project'] = BudgetCategory("Car Project", "{:.2f}".format(30000.00), '#aa0000')
