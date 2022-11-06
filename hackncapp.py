@@ -3,7 +3,6 @@
 from flask import Flask, render_template, request
 from datetime import datetime
 from enum import Enum
-import pandas as pd
 import random
 
 # Flask constructor takes the name of
@@ -81,8 +80,13 @@ def create_savings_goal():
         return index()
     return render_template('addsavingsgoal.html')
 
-# Login page route
+# Entering page
 @app.route('/', methods=["GET","POST"])
+def enter():
+    return render_template('entering_page.html')  
+
+# Login page route
+@app.route('/login', methods=["GET","POST"])
 def login():
     if request.method == 'POST':
         newLoginInfo = LoginInfo(request.form.get("username"), 
@@ -114,6 +118,7 @@ def payment_form():
         return index()
 
     return render_template('addpayment.html', budgetCategories=budgetCategories)
+
 
 # New Subscription Form Page Route
 @app.route('/subscriptionform', methods=["GET","POST"])
@@ -188,6 +193,7 @@ def generate_data():
 
 # main driver function
 if __name__ == '__main__':
+    
  
     # run() method of Flask class runs the application
     # on the local development server.
