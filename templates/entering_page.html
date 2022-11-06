@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"> 
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="/scripts/script.js" defer></script>
+
+    <title>Login</title>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div id="navbar">
+        <a href="#home-page" class="navbar-item">Budget Buddy</a> <!--Edit and have a web app name-->
+        <a href="/login" class="navbar-item coloring">Get started today</a>
+        <!-- <a href="#sign-in-page" class="navbar-item">Sign in to Analytics</a> -->
+        <a href="#overview-page" class="navbar-item">What is this project?</a>
+    </div>
+
+    <div class="page-content">
+
+        <!--Home Page-->
+        <section id="home-page">
+            <div class="container row">
+                <div class="container row" id="landing-container">
+                    <img src="{{ url_for('static', filename='IMG_8081.jpg') }}" class="about-img" alt="Profile Picture">            
+                    <div class="container column" id="landing-text">
+                        <!-- <img src="assets/img/photoofmyself.jpg" id="profile-icon" alt="Profile Picture"> -->
+                        <h1 class="title">Get essential financial insights. <br> <br> Fast.</h1>
+                        <p id="app"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--About Section-->
+        <section class="container row" id="overview-page">
+            <div id="about-page-description">
+                <P class="box move">
+                    Get a complete understanding of your budget across one-time purchases and subscriptions. <b>Budget Buddy</b> gives you the tools, free of charge, to understand how to save money.
+                </P>
+                <img src="{{ url_for('static', filename='img2.png') }}" class="about-img2" alt="Profile Picture2">            
+
+                <p>
+                </p>
+                <p>
+
+                </p>
+            </div>
+            <!-- <img src="" id="about-img" alt="Profile Picture">             -->
+
+        </section>
+
+
+
+
+    <!-- <form action="{{url_for('login')}}" method="post">
+        <label for="username">Username: </label>
+        <input id="username" name="username" type="text"><br>
+        <label for="password">Password: </label>
+        <input id="password" name="password" type="password"><br>
+        <input type="submit" value="Log In"> -->
+    </form>
+    
+</body>
+</html>
