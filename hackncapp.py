@@ -57,6 +57,9 @@ dataset = {}
 # Populate the list of budget categories
 budgetCategories = {}
 
+# Populate the list of savings goals
+savingsGoals = []
+
 # Locally stored spending metrics
 # TODO: Query database to populate this info when the app is open
 budget = 0
@@ -79,6 +82,7 @@ def create_savings_goal():
             "{:.2f}".format(float(request.form.get('goal'))), 
             date)
         # Put database writing stuff here :)
+        savingsGoals.append(newSavingsGoal)
         return index()
     return render_template('addsavingsgoal.html')
 
@@ -89,13 +93,18 @@ def login():
         newLoginInfo = LoginInfo(request.form.get("username"), 
             request.form.get("password"))
         generate_data()
-        return render_template('index.html', user=newLoginInfo.username, data=budgetCategories)
+        return render_template('index.html', 
+            user=newLoginInfo.username, 
+            data=budgetCategories, 
+            savingsGoals=savingsGoals)
     return render_template('login.html')
 
 # Home Page route
 @app.route('/home', methods =["GET", "POST"])
 def index():
-    return render_template('index.html', data=budgetCategories)
+    return render_template('index.html', 
+        data=budgetCategories, 
+        savingsGoals=savingsGoals)
 
 # New Payment Form Page route
 @app.route('/paymentform', methods=["GET","POST"])

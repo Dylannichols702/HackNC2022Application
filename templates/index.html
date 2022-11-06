@@ -41,5 +41,14 @@
         </div>
         {% endfor %}
     </div>
+    <table>
+        <caption>Savings Goals</caption>
+        {% for savingsGoal in savingsGoals %}
+        <tr>
+            <td>{{ savingsGoal.name }}</td>
+            <td>${{ savingsGoal.goal }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>
