@@ -246,7 +246,10 @@ def subscription_form():
         cur.execute('SELECT due_date, cost FROM payment WHERE due_date > now() - INTERVAL \'30 days\' GROUP BY due_date,cost;')
         last30payment = cur.fetchall()
         
-        print(last30payment)
+        dataMap = dict()
+        for i in last30payment:
+            dataMap[i[0]] = i[1]
+        print(dataMap)
 
         conn.commit()
         cur.close()
