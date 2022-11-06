@@ -20,10 +20,10 @@
 
     
     <div id="tablecontainer">
-        {% for paytype,payments in data.items() %}
+        {% for categoryName,category in data.items() %}
             <table>
-                <caption>{{ paytype }}</caption>
-                {% for payment in payments %}
+                <caption>{{ categoryName }}</caption>
+                {% for payment in category.items %}
                 <tr>
                     <td>{{payment.name}}</td>
                     <td>{{payment.cost}}</td>
