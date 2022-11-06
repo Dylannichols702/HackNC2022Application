@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Savings Goal Addition</title>
+</head>
+<body>
+    <h1>New Savings Goal</h1>
+    <form action="{{url_for('create_savings_goal')}}" method="post">
+        <label for = "GoalName">Goal Name:</label>
+        <input id = "GoalName" name="goalname" type = "text" required>
+        <br>
+        <label for = "Goal">Goal: $</label>
+        <input id = "Goal" name="goal" type="number" required>
+        <br>
+        <label for="deadline">Deadline:</label>
+        <input type="date" name="deadline" id="dealine"><br>
+        <input type="submit" value="Create" style="display: inline-block;">
+    </form>
+    <a href="/home"><button>Back</button></a>
+</body>
+</html>
