@@ -40,6 +40,25 @@ def initialize_database():
 
     cur.close()
     conn.close()
+def clearEverything():
+    conn = psycopg2.connect(
+    host="localhost",
+    database="flask_db",
+    user='mmaggiore',
+    password='password')
+    # Open a cursor to perform database operations
+    cur = conn.cursor()
+    cur.execute('DROP TABLE IF EXISTS person CASCADE;')
+    cur.execute('DROP TABLE IF EXISTS budget CASCADE;')
+    cur.execute('DROP TABLE IF EXISTS category CASCADE;')
+    cur.execute('DROP TABLE IF EXISTS login CASCADE;')
+    cur.execute('DROP TABLE IF EXISTS payment CASCADE;')
+    cur.execute('DROP TABLE IF EXISTS saving_goals CASCADE;')
+    
+    conn.commit()
+
+    cur.close()
+    conn.close()
 
 #CHANGE THIS!!!!!!!!!!!!!!!!!!!
 CURRENT_GLOBAL_USER_ID = 1
