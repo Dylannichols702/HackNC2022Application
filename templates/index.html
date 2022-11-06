@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <h1>Welcome, User</h1>
+    <h1>Welcome, {{user}}</h1>
 
     <a href="/createsavingsgoal"><button>Create Savings Goal</button></a>
     <a href="/paymentform"><button>Add Payment</button></a>
@@ -17,41 +17,22 @@
 
     <h1>{{dataset}}</h1>
 
-    {% for paytype,payments in data.items() %}
-    <table style="display: inline-block;">
-        <tr>
-            <th>Entertainment</th>
-        </tr> 
-        <tr>
-            <td>Test</td>
-            <td>$0.00</td>
-        </tr>  
-    </table>
+    <div>
+        {% for paytype,payments in data.items() %}
 
-    <table style="float: left;">
-        <tr>
-            <th>Bills</th>
-        </tr> 
-        <tr>
-            <td>Test</td>
-            <td>$0.00</td>
-        </tr>  
-    </table>
+        <h3 class="tabletitle">{{ paytype }}</h3>
+        <table>
 
-    <table style="float: left;">
-        <tr>
-            <th>{{ paytype }}</th>
-        </tr> 
+            {% for payment in payments %}
+            <tr>
+                <td>{{payment.name}}</td>
+                <td>{{payment.cost}}</td>
+            </tr>  
+            {% endfor %}
 
-        {% for payment in payments %}
-        <tr>
-            <td>{{payment.name}}</td>
-            <td>{{payment.cost}}</td>
-        </tr>  
-        {% endfor %}
-
-    </table>
-    <br>
+        </table>
+    </div>
+    
     {% endfor %}
 </body>
 </html>

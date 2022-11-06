@@ -37,7 +37,7 @@ CREATE TABLE payment(
     name TEXT,
     cost double precision,  -- might change to save space 
     category_name TEXT,
-    type_of_payment TEXT,
+    subscription_type TEXT,
     due_date DATE,
     FOREIGN KEY (user_id) REFERENCES person(id),
     FOREIGN KEY (category_name) REFERENCES category(name)

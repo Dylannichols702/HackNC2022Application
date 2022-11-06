@@ -26,7 +26,7 @@ def initialize_database():
     cur.execute('DROP TABLE IF EXISTS login CASCADE;')
     cur.execute('CREATE TABLE login(user_id SERIAL,password TEXT UNIQUE,user_name TEXT UNIQUE,FOREIGN KEY (user_id) REFERENCES person(id));')
     cur.execute('DROP TABLE IF EXISTS payment CASCADE;')
-    cur.execute('CREATE TABLE payment(payment_id SERIAL PRIMARY KEY,user_id SERIAL,name TEXT,cost double precision, category_name TEXT, type_of_payment TEXT, subscription_type TEXT, due_date DATE, FOREIGN KEY (user_id) REFERENCES person(id),FOREIGN KEY (category_name) REFERENCES category(name));')
+    cur.execute('CREATE TABLE payment(payment_id SERIAL PRIMARY KEY,user_id SERIAL,name TEXT,cost double precision, category_name TEXT,type_of_payment TEXT,due_date DATE,FOREIGN KEY (user_id) REFERENCES person(id),FOREIGN KEY (category_name) REFERENCES category(name));')
     cur.execute('DROP TABLE IF EXISTS saving_goals CASCADE;')
     cur.execute('CREATE TABLE saving_goals(user_id SERIAL,name TEXT,amount double precision,dead_line date,FOREIGN KEY (user_id) REFERENCES person(id));')
     
@@ -53,6 +53,8 @@ class SavingsGoal:
         self.name = name
         self.goal = goal
         self.deadline = deadline
+    def parseDate(self):
+        return str(self.deadline.year) + "-" + str(self.deadline.month) + "-" + str(self.deadline.day)
 
 # Define Payment Class
 class Payment:
@@ -79,7 +81,6 @@ app = Flask(__name__)
 @app.route('/createsavingsgoal', methods =["GET", "POST"])
 def create_savings_goal():
     if request.method == "POST":
-        date = datetime.strptime(request.form.get("deadline"), "%Y-%m-%d")
         newSavingsGoal = SavingsGoal(request.form.get("goalname"),
             request.form.get("goal"), 
             datetime(int(request.form.get("year")),
@@ -95,21 +96,19 @@ def create_savings_goal():
         password='password')
         cur = conn.cursor()
         cur.execute('INSERT INTO saving_goals(name,amount,dead_line,user_id)'
-        'VALUES(%s,%s,%s,%s)', (newSavingsGoal.name,newSavingsGoal.goal,stringDate,CURRENT_GLOBAL_USER_ID))
+        'VALUES(%s,%s,%s,%s)',(newSavingsGoal.name,newSavingsGoal.goal,stringDate,CURRENT_GLOBAL_USER_ID))
         conn.commit()
         cur.close()
         conn.close()
 
-        # Put database writing stuff here :)
-        return index()
-    return render_template('addsavingsgoal.html')
+    return render_template('addsavingsgoal.html', currentyear=datetime.today().year)
 
-# Login page route
 @app.route('/', methods=["GET","POST"])
 def login():
     if request.method == 'POST':
         newLoginInfo = LoginInfo(request.form.get("username"), 
-            request.form.get("password"))   
+            request.form.get("password"))
+        
         # place it in side the database!!!!!!!!!!!!!
         conn = psycopg2.connect(
         host="localhost",
@@ -127,6 +126,8 @@ def login():
         conn.close()
         
         return index()
+
+
     return render_template('login.html')
 
 # Home Page route
@@ -138,8 +139,7 @@ def index():
 @app.route('/paymentform', methods=["GET","POST"])
 def payment_form():
     if request.method == 'POST':
-        type = request.form.get('ptype')
-        formData = Payment(type,
+        formData = Payment(request.form.get('ptype'),
             False,
             request.form.get('pname'),
             request.form.get('cost'),
@@ -154,25 +154,15 @@ def payment_form():
         password='password')
         cur = conn.cursor()
         
-        cur.execute('INSERT INTO payment(user_id,name, cost, type_of_payment, due_date)'
-        'VALUES(%s, %s, %s, %s, %s)',[CURRENT_GLOBAL_USER_ID, formData.name, formData.cost, "One-time payment", formData.date])# add dollar sign in front of number? figure out later.
-        
-#           File "c:\Users\lunat\OneDrive\Documents\HackNC-2022\hackncapp.py", line 157, in payment_form
-#           cur.execute('INSERT INTO payment(user_id,name, cost, category_name, type_of_payment)'
-#           psycopg2.errors.ForeignKeyViolation: insert or update on table "payment" violates foreign key constraint "payment_category_name_fkey"
-#           DETAIL:  Key (category_name)=(Entertainment) is not present in table "category".
-
-
+        cur.execute('INSERT INTO payment(user_id,name,cost)'
+        'VALUES(%s, %s, %s)',[CURRENT_GLOBAL_USER_ID, formData.name, formData.cost])
         # cur.execute('INSERT INTO login(password,user_name)'
         # 'VALUES(%s,%s)',(newLoginInfo.password,newLoginInfo.username))
         conn.commit()
         cur.close()
         conn.close()
         
-        if type in dataset:
-            dataset[type].append(formData)
-        else:
-            dataset[type] = [formData]
+        dataset.append(formData)
         return index()
 
     return render_template('addpayment.html', data=PaymentCategory)
@@ -181,34 +171,14 @@ def payment_form():
 @app.route('/subscriptionform', methods=["GET","POST"])
 def subscription_form():
     if request.method == 'POST':
-        type = request.form.get('ptype')
-        formData = Payment(type, 
+        formData = Payment(request.form.get('ptype'), 
             True,
             request.form.get('pname'),
             request.form.get('cost'),
             request.form.get('date'),
             request.form.get('stype'))
-
-        # SQL code
-        conn = psycopg2.connect(
-        host="localhost",
-        database="flask_db",
-        user='mmaggiore',
-        password='password')
-        cur = conn.cursor()
         
-        cur.execute('INSERT INTO payment(user_id, name, cost, type_of_payment, subscription_type, due_date)'
-        'VALUES(%s, %s, %s, %s, %s, %s)',(CURRENT_GLOBAL_USER_ID, formData.name, formData.cost, "Recurring payment", formData.renewal_type, formData.date))
-        # cur.execute('INSERT INTO login(password,user_name)'
-        # 'VALUES(%s,%s)',(newLoginInfo.password,newLoginInfo.username))
-        conn.commit()
-        cur.close()
-        conn.close()
-        
-        if type in dataset:
-            dataset[type].append(formData)
-        else:
-            dataset[type] = [formData]
+        dataset.append(formData)
         return index()
 
     return render_template('addsubscription.html', paymentTypes=PaymentCategory, renewalTypes=RenewalType)
