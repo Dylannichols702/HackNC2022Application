@@ -41,7 +41,7 @@ button, input[type=submit]{
   margin: 10px;
 }
 
-input[type=text] {
+input[type=text], input[type=date]{
   margin-top: 25px;
   margin-bottom: 25px;
 }
