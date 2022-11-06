@@ -89,6 +89,7 @@ def login():
     if request.method == 'POST':
         newLoginInfo = LoginInfo(request.form.get("username"), 
             request.form.get("password"))
+        generate_data()
         return render_template('index.html', user=newLoginInfo.username, data=budgetCategories)
     return render_template('login.html')
 
@@ -152,12 +153,12 @@ def category_breakdown(name):
     return render_template('categorybreakdown.html', budgetCategory=budgetCategories[name])
 
 def generate_data():
-    budgetCategories['Car Project'] = BudgetCategory("Car Project", 30000, '#aa0000')
-    budgetCategories['Italy Trip'] = BudgetCategory("Italy Trip", 5000, '#0000aa')
+    budgetCategories['Car Project'] = BudgetCategory("Car Project", "{:.2f}".format(30000.00), '#aa0000')
+    budgetCategories['Italy Trip'] = BudgetCategory("Italy Trip", "{:.2f}".format(5000.00), '#0000aa')
     for name,category in budgetCategories.items():
         for i in range(100):
-            newDate = datetime.now + i
-            newData = Payment(name, False, "random payment", i*random(10), newDate, RenewalType["None"])
+            newDate = datetime.now
+            newData = Payment(name, False, "random payment", "{:.2f}".format(random.random()*i) , newDate, RenewalType["None"])
             category.items.append(newData)
 
 # main driver function
@@ -165,5 +166,4 @@ if __name__ == '__main__':
  
     # run() method of Flask class runs the application
     # on the local development server.
-    generate_data()
     app.run()
