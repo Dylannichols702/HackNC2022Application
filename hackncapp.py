@@ -142,6 +142,9 @@ def subscription_form():
                 date = date + relativedelta(weeks=1)
             else:
                 break
+            
+        budgetCategories[type].items.append(formData)
+        calc_budgetvalues(budgetCategories[type])
 
         return index()
 
