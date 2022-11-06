@@ -461,6 +461,9 @@ def generate_data():
             conn.commit()
         cur.close()
         conn.close()
+
+        calc_monthly_spending()
+        calc_budgetvalues(budgetCategories[name])
     
 
 # main driver function
