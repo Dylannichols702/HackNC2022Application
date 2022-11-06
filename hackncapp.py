@@ -183,7 +183,7 @@ def payment_form():
         cur = conn.cursor()
 
         cur.execute('INSERT INTO category(name)'
-        'VALUES(%s);', [formData.category])
+        'VALUES(%s) ON CONFLICT DO NOTHING;', [formData.category])
         
         cur.execute('INSERT INTO payment(user_id, name, cost, category_name, type_of_payment, due_date)'
         'VALUES(%s, %s, %s, %s, %s, %s)',[CURRENT_GLOBAL_USER_ID, formData.name, formData.cost, formData.category,"One-time payment", formData.date])# add dollar sign in front of number? figure out later.
@@ -226,13 +226,11 @@ def subscription_form():
         cur = conn.cursor()
 
         cur.execute('INSERT INTO category(name)'
-        'VALUES(%s)',[formData.category])
+        'VALUES(%s) ON CONFLICT DO NOTHING;', [formData.category])
         
         
         cur.execute('INSERT INTO payment(user_id, name, cost, category_name, type_of_payment, subscription_type, due_date)'
         'VALUES(%s, %s, %s, %s, %s, %s, %s)',(CURRENT_GLOBAL_USER_ID, formData.name, formData.cost, formData.category,"Recurring payment", formData.renewal_type.name, formData.date))
-        # cur.execute('INSERT INTO login(password,user_name)'
-        # 'VALUES(%s,%s)',(newLoginInfo.password,newLoginInfo.username))
         conn.commit()
         cur.close()
         conn.close()
