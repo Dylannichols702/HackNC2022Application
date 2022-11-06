@@ -235,21 +235,22 @@ def subscription_form():
         cur.close()
         conn.close()
         
-        # budgetCategories[type].items.append(formData)
-        # conn = psycopg2.connect(
-        # host="localhost",
-        # database="flask_db",
-        # user='mmaggiore',
-        # password='password')
-        # cur = conn.cursor()
+        budgetCategories[type].items.append(formData)
+        conn = psycopg2.connect(
+        host="localhost",
+        database="flask_db",
+        user='mmaggiore',
+        password='password')
+        cur = conn.cursor()
         
-        # last30payment=cur.execute('SELECT due_date, cost FROM Payment GROUP BY due_date HAVING CURRENT_DATE - 30 < due_date;')
+        cur.execute('SELECT due_date, cost FROM payment WHERE due_date > now() - INTERVAL \'30 days\' GROUP BY due_date,cost;')
+        last30payment = cur.fetchall()
         
-        # print(last30payment)
+        print(last30payment)
 
-        # conn.commit()
-        # cur.close()
-        # conn.close()
+        conn.commit()
+        cur.close()
+        conn.close()
         return index()
 
     return render_template('addsubscription.html', budgetCategories=budgetCategories, renewalTypes=RenewalType)
