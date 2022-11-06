@@ -53,10 +53,7 @@ RenewalType = Enum("RenewalType",["Monthly", "Yearly", "None"])
 dataset = {}
 
 # Populate the list of budget categories
-budgetCategories = {
-    "Entertainment":BudgetCategory("Entertainment",0,'#000000'),
-    "Bills":BudgetCategory("Bills",0,'#000000')
-    }
+budgetCategories = {}
 
 # Locally stored spending metrics
 # TODO: Query database to populate this info when the app is open
@@ -111,6 +108,8 @@ def payment_form():
             RenewalType["None"])
 
         budgetCategories[type].items.append(formData)
+        calc_budgetvalues(budgetCategories[type])
+        
         return index()
 
     return render_template('addpayment.html', budgetCategories=budgetCategories)
@@ -150,7 +149,21 @@ def add_budget_category():
 # Category Breakdown Page Route
 @app.route('/categorybreakdown/<name>', methods=["GET","POST"])
 def category_breakdown(name):
+    # Calculate Remaining Budget
     return render_template('categorybreakdown.html', budgetCategory=budgetCategories[name])
+
+def calc_budgetvalues(budgetCategory):
+    budgetCategory.budgetremaining = budgetCategory.budget
+    budgetremaining = float(budgetCategory.budgetremaining)
+
+    # Calculate Remaining Budget
+    for item in budgetCategory.items:
+        budgetremaining -= float(item.cost)
+    budgetCategory.budgetremaining = str("{:.2f}".format(budgetremaining))
+
+    # Calculate Remaining Budget Percentage
+    budgetpercent = (budgetremaining/float(budgetCategory.budget))*100
+    budgetCategory.budgetpercent = str("{:.2f}".format(budgetpercent))
 
 def generate_data():
     budgetCategories['Car Project'] = BudgetCategory("Car Project", "{:.2f}".format(30000.00), '#aa0000')
@@ -160,6 +173,7 @@ def generate_data():
             newDate = datetime.now
             newData = Payment(name, False, "random payment", "{:.2f}".format(random.random()*i) , newDate, RenewalType["None"])
             category.items.append(newData)
+        calc_budgetvalues(budgetCategories[name])
 
 # main driver function
 if __name__ == '__main__':
