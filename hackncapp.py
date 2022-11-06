@@ -226,10 +226,10 @@ def subscription_form():
         cur = conn.cursor()
 
         cur.execute('INSERT INTO category(name)'
-        'VALUES(%s)',(formData.name))
+        'VALUES(%s)',[formData.category])
         
         cur.execute('INSERT INTO payment(user_id, name, cost, category_name, type_of_payment, subscription_type, due_date)'
-        'VALUES(%s, %s, %s, %s, %s, %s, %s)',(CURRENT_GLOBAL_USER_ID, formData.name, formData.cost, formData.category,"Recurring payment", formData.renewal_type, formData.date))
+        'VALUES(%s, %s, %s, %s, %s, %s, %s)',(CURRENT_GLOBAL_USER_ID, formData.name, formData.cost, formData.category,"Recurring payment", formData.renewal_type.name, formData.date))
         # cur.execute('INSERT INTO login(password,user_name)'
         # 'VALUES(%s,%s)',(newLoginInfo.password,newLoginInfo.username))
         conn.commit()
