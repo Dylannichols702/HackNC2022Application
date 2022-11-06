@@ -127,6 +127,8 @@ def subscription_form():
             RenewalType[request.form.get('stype')])
         
         budgetCategories[type].items.append(formData)
+        calc_budgetvalues(budgetCategories[type])
+        
         return index()
 
     return render_template('addsubscription.html', budgetCategories=budgetCategories, renewalTypes=RenewalType)
