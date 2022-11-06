@@ -134,3 +134,36 @@ font-family: sans-serif;
   border-left: 50px solid #78DCDC;
   border-right: 50px solid #FFD862;
 }
+
+/* Navigation bar */
+#navbar {
+  left: 0%;
+  right: 0%;
+  z-index: 100;
+  transition: top 0.4s;
+  top: 0px; /*-70px before*/
+  background-color: white;
+  display: block;
+  box-shadow: 2px 2px 5px #aaa;
+  position: fixed;
+}
+
+.navbar-item {
+  color: #2a2d34;
+  float: right;
+  text-align: center;
+  display: block;
+  padding: 22px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.navbar-item:first-child {
+  font-size: 30px;
+  font-weight: 500;
+  float: left;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  padding-top: 16px;
+}
