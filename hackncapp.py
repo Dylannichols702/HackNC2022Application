@@ -90,7 +90,7 @@ def login():
 # Home Page route
 @app.route('/home', methods =["GET", "POST"])
 def index():
-    return render_template('index.html', data=dataset)
+    return render_template('index.html', data=budgetCategories)
 
 # New Payment Form Page route
 @app.route('/paymentform', methods=["GET","POST"])
