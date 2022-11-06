@@ -13,30 +13,11 @@
         <label for = "GoalName">Goal Name:</label>
         <input id = "GoalName" name="goalname" type = "text" required>
         <br>
-        <label for = "Goal">Goal:</label>
+        <label for = "Goal">Goal: $</label>
         <input id = "Goal" name="goal" type="number" required>
         <br>
-        <p>Deadline:</p>
-        <label for="month">Month:</label>
-        <select id="month" name="month">
-            <option value=1>January</option>
-            <option value=2>February</option>
-            <option value=3>March</option>
-            <option value=4>April</option>
-            <option value=5>May</option>
-            <option value=6>June</option>
-            <option value=7>July</option>
-            <option value=8>August</option>
-            <option value=9>September</option>
-            <option value=10>October</option>
-            <option value=11>November</option>
-            <option value=12>December</option>
-        </select>
-        <label for="day">Day:</label>
-        <input id="day" name="day" type="number" min="1" max="31" required>
-        <label for="year">Year:</label>
-        <input id="year" name="year" type="number" min="{{currentyear}}" required>
-        <br>
+        <label for="deadline">Deadline:</label>
+        <input type="date" name="deadline" id="dealine"><br>
         <input type="submit" value="Create" style="display: inline-block;">
     </form>
     <a href="/home"><button>Back</button></a>

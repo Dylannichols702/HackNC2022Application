@@ -19,8 +19,6 @@ class SavingsGoal:
         self.name = name
         self.goal = goal
         self.deadline = deadline
-    def parseDate(self):
-        return str(self.deadline.year) + "-" + str(self.deadline.month) + "-" + str(self.deadline.day)
 
 # Define Payment Class
 class Payment:
@@ -47,20 +45,21 @@ app = Flask(__name__)
 @app.route('/createsavingsgoal', methods =["GET", "POST"])
 def create_savings_goal():
     if request.method == "POST":
+        date = datetime.strptime(request.form.get("deadline"), "%Y-%m-%d")
         newSavingsGoal = SavingsGoal(request.form.get("goalname"),
             request.form.get("goal"), 
-            datetime(int(request.form.get("year")),
-            int(request.form.get("month")),
-            int(request.form.get("day"))))
+            date)
         # Put database writing stuff here :)
-    return render_template('addsavingsgoal.html', currentyear=datetime.today().year)
+        return index()
+    return render_template('addsavingsgoal.html')
 
+# Login page route
 @app.route('/', methods=["GET","POST"])
 def login():
     if request.method == 'POST':
         newLoginInfo = LoginInfo(request.form.get("username"), 
             request.form.get("password"))
-        return index()
+        return render_template('index.html', user=newLoginInfo.username, data=dataset)
     return render_template('login.html')
 
 # Home Page route
