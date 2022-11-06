@@ -5,7 +5,12 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from enum import Enum
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import random
+from io import BytesIO
+import base64
 
 # Flask constructor takes the name of
 # current module (__name__) as argument.
@@ -179,7 +184,25 @@ def add_budget_category():
 @app.route('/categorybreakdown/<name>', methods=["GET","POST"])
 def category_breakdown(name):
     # Calculate Remaining Budget
-    return render_template('categorybreakdown.html', budgetCategory=budgetCategories[name])
+    img = BytesIO()
+
+    y = []
+    x = []
+
+    for payment in budgetCategories["Car Project"].items:
+        y.append(payment.cost)
+        x.append(payment.date)
+
+    plt.plot(x,y)   
+
+    plt.savefig(img, format='png')
+    plt.close()
+    img.seek(0)
+    plot_url = base64.b64encode(img.getvalue()).decode('utf8')
+    
+    #<img src="data:image/png;base64, {{ plot_url }}">
+
+    return render_template('categorybreakdown.html', budgetCategory=budgetCategories[name], plot_url=plot_url)
 
 def calc_budgetvalues(budgetCategory):
     budgetCategory.budgetremaining = budgetCategory.budget
