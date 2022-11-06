@@ -3,6 +3,7 @@
 from flask import Flask, render_template, request
 from datetime import datetime
 from enum import Enum
+import pandas as pd
 import random
 
 # Flask constructor takes the name of
@@ -77,7 +78,7 @@ def create_savings_goal():
     if request.method == "POST":
         date = datetime.strptime(request.form.get("deadline"), "%Y-%m-%d")
         newSavingsGoal = SavingsGoal(request.form.get("goalname"),
-            "{:.2f}".format(float(request.form.get('cost'))), 
+            "{:.2f}".format(float(request.form.get('goal'))), 
             date)
         # Put database writing stuff here :)
         return index()
@@ -160,6 +161,16 @@ def generate_data():
             newDate = datetime.now
             newData = Payment(name, False, "random payment", "{:.2f}".format(random.random()*i) , newDate, RenewalType["None"])
             category.items.append(newData)
+        
+        for i in range(50):
+            newDate = datetime.now
+            newData = Payment(name, 
+                False, "random subscription", 
+                "{:.2f}".format(random.random()*i), 
+                newDate, 
+                random.choice([RenewalType["Monthly"], RenewalType["Yearly"]]))
+            category.items.append(newData)
+    
 
 # main driver function
 if __name__ == '__main__':
