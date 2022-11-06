@@ -4,6 +4,12 @@ from flask import Flask, render_template, request
 from datetime import datetime
 from enum import Enum
 import psycopg2
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from io import BytesIO
+import base64
+import pandas as pd
 
 # Create local database in the beginning
 def initialize_database():
@@ -242,14 +248,6 @@ def subscription_form():
         user='mmaggiore',
         password='password')
         cur = conn.cursor()
-        
-        cur.execute('SELECT due_date, cost FROM payment WHERE due_date > now() - INTERVAL \'30 days\' GROUP BY due_date,cost;')
-        last30payment = cur.fetchall()
-        
-        dataMap = dict()
-        for i in last30payment:
-            dataMap[i[0]] = i[1]
-        print(dataMap)
 
         conn.commit()
         cur.close()
@@ -279,14 +277,29 @@ def category_breakdown(name):
     # Calculate Remaining Budget
     img = BytesIO()
 
-    # y = []
-    # x = []
+    conn = psycopg2.connect(
+        host="localhost",
+        database="flask_db",
+        user='mmaggiore',
+        password='password')
+    cur = conn.cursor()
 
-    # for payment in budgetCategories["Car Project"].items:
-    #     y.append(payment.cost)
-    #     x.append(payment.date.month)
+    cur.execute('SELECT due_date, cost FROM payment WHERE due_date > now() - INTERVAL \'30 days\' GROUP BY due_date,cost;')
+    last30payment = cur.fetchall()
+    
+    dataMap = dict()
+    for i in last30payment:
+        dataMap[i[0]] = i[1]
+    print(dataMap)
 
-    # plt.plot(x,y)   
+    x = []
+    y = []
+
+    for date,cost in dataMap.items():
+        y.append(cost)
+        x.append(date.day)
+
+    plt.plot(x,y)   
 
     plt.savefig(img, format='png')
     plt.close()
