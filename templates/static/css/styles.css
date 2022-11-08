@@ -70,7 +70,7 @@ color: #8d8d8d;
   font-weight: 500;
   float: left;
   margin-bottom: 0px;
-  padding-bottom: 0px;
+  padding-bottom: 8px;
   padding-top: 16px;
 }
 
@@ -95,13 +95,7 @@ color: #8d8d8d;
   color: white;
 }
 
-.coloring:hover {
-  z-index: 3;
-  transition: 0.5s;
-  background-color: #0a5fa8;
-  color: white;
-  
-}
+
 
 .contactSpacing {
   padding-right: 30px;
@@ -112,8 +106,20 @@ color: #8d8d8d;
   color: white;
 }
 
+.coloring2{
+  padding-right: 42px;
+}
+
 .coloring::after {
-  border-bottom: solid 3px white;
+  border-bottom: solid 3px white;  
+}
+
+.coloring:hover {
+  z-index: 3;
+  transition: 0.5s;
+  background-color: #0a5fa8;
+  color: white;
+  
 }
 
 /* Home Page */
